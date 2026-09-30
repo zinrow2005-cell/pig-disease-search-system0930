@@ -1,0 +1,1375 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta name="app-build" content="V24 CLEAN RELEASE"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#0f172a"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="豬病搜尋"/>
+<title>豬病圖譜搜尋與症狀判斷系統</title>
+
+<link rel="canonical" href="https://zinrow2005-cell.github.io/Pig_Disease_Search_System/"/>
+<link rel="manifest" href="manifest.webmanifest?v=24"/>
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=24"/>
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png?v=24"/>
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png?v=24"/>
+<link rel="shortcut icon" href="favicon.ico?v=24"/>
+
+<meta property="og:type" content="website"/>
+<meta property="og:locale" content="zh_TW"/>
+<meta property="og:site_name" content="豬病圖譜搜尋與症狀判斷系統"/>
+<meta property="og:title" content="豬病圖譜搜尋與症狀判斷系統"/>
+<meta property="og:description" content="疾病搜尋、病例判斷、圖文圖譜、台灣現行資料與處置決策整合系統。"/>
+<meta property="og:url" content="https://zinrow2005-cell.github.io/Pig_Disease_Search_System/"/>
+<meta property="og:image" content="https://zinrow2005-cell.github.io/Pig_Disease_Search_System/assets/line-share.jpg"/>
+<meta property="og:image:secure_url" content="https://zinrow2005-cell.github.io/Pig_Disease_Search_System/assets/line-share.jpg"/>
+<meta property="og:image:type" content="image/jpeg"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="豬病圖譜搜尋與症狀判斷系統"/>
+<meta name="twitter:description" content="疾病搜尋、病例判斷、圖文圖譜、台灣現行資料與處置決策整合系統。"/>
+<meta name="twitter:image" content="https://zinrow2005-cell.github.io/Pig_Disease_Search_System/assets/line-share.jpg"/>
+
+<link rel="stylesheet" href="styles.css?v=24"/>
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <div class="eyebrow">豬病健康圖譜</div>
+    <h1>豬病圖譜搜尋與症狀判斷系統</h1>
+    <p>資料核心：你提供的《豬病診治原色圖譜》；疾病名稱統一使用繁體中文，常用疾病另附英文縮寫。判斷結果只做「可能相關疾病」排序，不取代實驗室診斷。</p>
+  </div>
+  <button id="installBtn" class="ghost hidden">安裝到主畫面</button>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-tab="dashboard">疾病事件中心</button>
+  <button class="tab" data-tab="disease">疾病搜尋</button>
+  <button class="tab" data-tab="triage">病例判斷</button>
+  <button class="tab" data-tab="pathology">剖檢病變</button>
+  <button class="tab" data-tab="atlas">圖片圖譜</button>
+  <button class="tab" data-tab="action">處置決策</button>
+  <button class="tab" data-tab="favorites">我的重點</button>
+  <button class="tab" data-tab="tracker">病例追蹤</button>
+  <button class="tab" data-tab="lab">採樣檢驗</button>
+  <button class="tab" data-tab="taiwan">台灣現行</button>
+  <button class="tab" data-tab="licenses">台灣藥品許可</button>
+  <button class="tab" data-tab="treatment">治療成效</button>
+  <button class="tab" data-tab="history">歷史成效分析</button>
+  <button class="tab" data-tab="amr">抗菌藥監測</button>
+  <button class="tab" data-tab="cases">判斷紀錄</button>
+  <button class="tab" data-tab="backup">資料備份</button>
+  <button class="tab" data-tab="sync">雲端同步</button>
+  <button class="tab" data-tab="about">系統說明</button>
+</nav>
+
+<main>
+
+<section id="tab-dashboard" class="panel active">
+  <div class="dashboard-head">
+    <div>
+      <div class="eyebrow">牧場疾病指揮中心</div>
+      <h2>牧場疾病事件中心</h2>
+      <p class="muted">彙整所有追蹤病例，快速判斷哪一棟正在惡化、今天新增多少死亡、哪些疾病／症候群可能同時出現在多棟。</p>
+    </div>
+    <div class="dashboard-actions">
+      <button id="dashboardNewCase" class="primary">＋ 建立病例</button>
+      <button id="dashboardRefresh" class="secondary">重新整理</button>
+    </div>
+  </div>
+
+  <div id="dashboardAlerts" class="dashboard-alerts"></div>
+
+  <div id="dashboardKpis" class="dashboard-kpis"></div>
+
+  <div class="risk-command-grid">
+    <section class="dashboard-card risk-radar-card">
+      <div class="section-title-row">
+        <div>
+          <div class="eyebrow">風險雷達</div>
+          <h3>今日風險雷達</h3>
+        </div>
+        <span id="riskRadarLevel" class="risk-level"></span>
+      </div>
+      <div class="risk-radar-wrap">
+        <canvas id="riskRadarCanvas" width="420" height="320"></canvas>
+        <div id="riskRadarLegend" class="risk-radar-legend"></div>
+      </div>
+    </section>
+
+    <section class="dashboard-card daily-task-card">
+      <div class="section-title-row">
+        <div>
+          <div class="eyebrow">今日優先事項</div>
+          <h3>今日優先工作清單</h3>
+        </div>
+        <div class="daily-task-actions">
+          <select id="taskPriorityFilter">
+            <option value="">全部優先級</option>
+            <option value="critical">立即</option>
+            <option value="high">高</option>
+            <option value="normal">一般</option>
+          </select>
+          <button id="resetDailyTasks" class="secondary">重設今日勾選</button>
+        </div>
+      </div>
+      <div id="dailyTaskSummary" class="daily-task-summary"></div>
+      <div id="dailyTaskList" class="daily-task-list"></div>
+    </section>
+  </div>
+
+  <div class="dashboard-grid">
+    <section class="dashboard-card dashboard-card-wide">
+      <div class="section-title-row">
+        <div>
+          <div class="eyebrow">追蹤中病例</div>
+          <h3>追蹤中病例總覽</h3>
+        </div>
+        <select id="dashboardCaseFilter">
+          <option value="">全部</option>
+          <option value="worsening">惡化</option>
+          <option value="improving">改善</option>
+          <option value="stable">持平／資料不足</option>
+        </select>
+      </div>
+      <div id="dashboardCaseTable" class="dashboard-case-table"></div>
+    </section>
+
+    <section class="dashboard-card">
+      <div class="eyebrow">今日</div>
+      <h3>今日變化</h3>
+      <div id="dashboardToday" class="dashboard-today"></div>
+    </section>
+
+    <section class="dashboard-card">
+      <div class="eyebrow">跨棟共同訊號</div>
+      <h3>跨棟共同訊號</h3>
+      <div id="dashboardCrossBarn" class="dashboard-crossbarn"></div>
+    </section>
+
+    <section class="dashboard-card dashboard-card-wide">
+      <div class="section-title-row">
+        <div>
+          <div class="eyebrow">全場趨勢</div>
+          <h3>全場病例與死亡趨勢</h3>
+        </div>
+        <select id="dashboardRange">
+          <option value="7">近 7 天</option>
+          <option value="14">近 14 天</option>
+          <option value="30">近 30 天</option>
+        </select>
+      </div>
+      <canvas id="farmTrendChart" height="240"></canvas>
+    </section>
+
+    <section class="dashboard-card dashboard-card-wide">
+      <div class="eyebrow">疾病／症候群分布</div>
+      <h3>目前主要疾病／症候群分布</h3>
+      <div id="dashboardDiseaseDist" class="dashboard-dist"></div>
+    </section>
+  </div>
+</section>
+
+<section id="tab-disease" class="panel">
+  <div class="searchbox">
+    <input id="diseaseSearch" placeholder="輸入疾病、症狀、病變關鍵字，例如：PRRS、腹瀉、耳朵發紫、肺炎…"/>
+  </div>
+  <div class="filters">
+    <select id="categoryFilter"><option value="">全部類別</option></select>
+    <span id="resultCount" class="muted"></span>
+  </div>
+  <div id="diseaseList" class="cards"></div>
+</section>
+
+<section id="tab-triage" class="panel">
+  <div class="wizard-head">
+    <div>
+      <div class="eyebrow">鑑別診斷</div>
+      <h2>豬隻症狀鑑別判斷</h2>
+      <p class="muted">依日齡、群體狀況、主要症候群、詳細症狀、病理解剖與環境線索，排序可能相關疾病。</p>
+    </div>
+    <div id="stepPills" class="step-pills"></div>
+  </div>
+
+  <div class="wizard-card">
+    <section class="wizard-step active" data-step="1">
+      <h3>1. 豬隻基本資料</h3>
+      <div class="meta-grid">
+        <select id="ageGroup">
+          <option value="">日齡／階段</option>
+          <option>新生仔豬</option><option>哺乳仔豬</option><option>保育豬</option>
+          <option>肉豬</option><option>後備母豬</option><option>懷孕母豬</option>
+          <option>哺乳母豬</option><option>公豬</option>
+        </select>
+        <input id="ageDays" inputmode="numeric" placeholder="日齡（可不填）"/>
+        <input id="weightKg" inputmode="decimal" placeholder="體重 kg（可不填）"/>
+        <input id="temp" inputmode="decimal" placeholder="體溫 ℃（可不填）"/>
+      </div>
+    </section>
+
+    <section class="wizard-step" data-step="2">
+      <h3>2. 群體與發病速度</h3>
+      <div class="meta-grid">
+        <select id="scope"><option value="">影響範圍</option><option>單頭</option><option>同欄多頭</option><option>同舍多欄</option><option>多舍／全場</option></select>
+        <input id="morbidity" inputmode="decimal" placeholder="發病率 %"/>
+        <input id="mortality" inputmode="decimal" placeholder="死亡率 %"/>
+        <select id="onset"><option value="">發病速度</option><option>數小時內</option><option>1–2 天</option><option>3–7 天</option><option>超過 1 週</option></select>
+      </div>
+      <textarea id="caseSummary" rows="3" placeholder="補充：何時開始、哪一棟、是否換料／轉欄／打疫苗／用藥後反應等"></textarea>
+    </section>
+
+    <section class="wizard-step" data-step="3">
+      <h3>3. 主要症候群與詳細症狀</h3>
+      <div id="syndromeChips" class="chips syndrome"></div>
+      <textarea id="symptomText" rows="4" placeholder="自由描述，例如：保育豬發燒、咳嗽、腹式呼吸、耳朵發紫，死亡突然增加"></textarea>
+      <div id="symptomChips" class="chips"></div>
+    </section>
+
+    <section class="wizard-step" data-step="4">
+      <h3>4. 病理解剖（沒有剖檢可略過）</h3>
+      <div id="lesionChips" class="chips"></div>
+      <textarea id="lesionText" rows="3" placeholder="例如：肺尖葉實變、胸膜黏連、腸壁變薄、淋巴結腫大、腎臟有出血點…"></textarea>
+    </section>
+
+    <section class="wizard-step" data-step="5">
+      <h3>5. 環境與管理線索</h3>
+      <div id="environmentChips" class="chips"></div>
+      <div class="meta-grid">
+        <input id="roomTemp" inputmode="decimal" placeholder="舍溫 ℃"/>
+        <input id="humidity" inputmode="decimal" placeholder="相對濕度 %"/>
+        <input id="waterChange" placeholder="飲水異常／水壓／水質（可不填）"/>
+        <input id="feedChange" placeholder="近期換料／原料變動（可不填）"/>
+      </div>
+    </section>
+
+    <div class="wizard-actions">
+      <button id="prevStep" class="secondary">上一步</button>
+      <button id="nextStep" class="primary">下一步</button>
+      <button id="analyzeBtn" class="primary hidden">產生鑑別診斷</button>
+    </div>
+  </div>
+
+  <div id="triageNotice" class="notice hidden"></div>
+  <div id="triageSummary" class="triage-summary hidden"></div>
+
+  <section id="diffLab" class="diff-lab hidden">
+    <div class="section-title-row">
+      <div>
+        <div class="eyebrow">鑑別矩陣</div>
+        <h2>鑑別診斷比較矩陣</h2>
+      </div>
+      <button id="resetAnswers" class="secondary">清除追問答案</button>
+    </div>
+    <p class="muted">將前幾名候選疾病直接橫向比較。✓ 代表原書條目中有對應線索；— 代表未明確標記。此表用於縮小鑑別範圍，不代表確診。</p>
+    <div id="matrixWrap" class="matrix-wrap"></div>
+
+    <div class="question-panel">
+      <div>
+        <div class="eyebrow">下一個最佳問題</div>
+        <h3>下一個最值得確認的症狀</h3>
+        <p class="muted">系統挑選最能區分目前前幾名疾病的線索。回答「有／沒有」後會立即重新排序。</p>
+      </div>
+      <div id="nextQuestions" class="question-list"></div>
+    </div>
+  </section>
+
+  <div id="matchList" class="matches"></div>
+</section>
+
+
+<section id="tab-pathology" class="panel">
+  <div class="organ-header">
+    <div>
+      <div class="eyebrow">剖檢與病變搜尋</div>
+      <h2>剖檢病變反查疾病</h2>
+      <p class="muted">先選器官，再選你看到的病變。系統會從圖譜中的「病理變化」文字與圖片頁面反查可能相關疾病。</p>
+    </div>
+    <button id="clearPathology" class="secondary">清除病變條件</button>
+  </div>
+
+  <div id="organGrid" class="organ-grid"></div>
+
+  <div id="organWorkbench" class="organ-workbench hidden">
+    <div class="organ-side">
+      <div class="eyebrow">已選器官</div>
+      <h3 id="selectedOrganTitle">器官</h3>
+      <div id="organLesionChips" class="chips organ-lesions"></div>
+      <textarea id="organFreeText" rows="4" placeholder="也可以直接描述，例如：肺尖葉暗紅實變、胸膜黏連、有纖維素"></textarea>
+      <button id="runPathologySearch" class="primary">依病變反查疾病</button>
+    </div>
+
+    <div class="organ-result">
+      <div id="organResultSummary" class="triage-summary hidden"></div>
+      <div id="organDiseaseResults" class="organ-disease-results"></div>
+    </div>
+  </div>
+
+  <div class="prose pathology-note">
+    <h3>使用方式</h3>
+    <p>病理解剖結果應和日齡、病程、群體發病率、用藥史與實驗室檢驗一起判讀。系統顯示的是「原書病理文字／圖譜頁面相符度」，不是確診機率。</p>
+  </div>
+</section>
+
+
+<section id="tab-atlas" class="panel">
+  <div class="organ-header">
+    <div>
+      <div class="eyebrow">圖片圖譜</div>
+      <h2>豬病圖片圖譜牆</h2>
+      <p class="muted">777 張圖譜圖片已依原書圖說建立索引，可依疾病、器官與圖片類型篩選。圖說文字直接取自原書。</p>
+    </div>
+    <button id="clearAtlasFilters" class="secondary">清除篩選</button>
+  </div>
+
+  <div class="atlas-filters">
+    <input id="atlasSearch" placeholder="搜尋疾病、圖號、圖說，例如：藍耳病、肺水腫、脾梗死…"/>
+    <select id="atlasTypeFilter">
+      <option value="">全部圖片類型</option>
+      <option>臨床外觀</option>
+      <option>病理解剖</option>
+      <option>病原／檢驗</option>
+      <option>其他</option>
+    </select>
+    <select id="atlasOrganFilter"><option value="">全部器官／部位</option></select>
+    <select id="atlasCategoryFilter"><option value="">全部疾病類別</option></select>
+  </div>
+
+  <div class="atlas-toolbar">
+    <span id="atlasCount" class="muted"></span>
+    <div class="atlas-view-toggle">
+      <button id="atlasCompact" class="secondary">緊湊</button>
+      <button id="atlasLarge" class="secondary">大圖</button>
+    </div>
+  </div>
+
+  <div id="atlasGrid" class="atlas-grid"></div>
+  <button id="atlasLoadMore" class="primary hidden">載入更多圖片</button>
+</section>
+
+<dialog id="imageDialog" class="image-dialog">
+  <div class="dialog-head">
+    <div>
+      <div id="imageDialogMeta" class="eyebrow"></div>
+      <h2 id="imageDialogTitle"></h2>
+    </div>
+    <button id="closeImageDialog" class="ghost">關閉</button>
+  </div>
+  <div class="image-dialog-body">
+    <img id="imageDialogImg" alt="圖譜圖片"/>
+    <div class="image-dialog-info">
+      <div id="imageDialogFigure" class="badge"></div>
+      <p id="imageDialogCaption"></p>
+      <p id="imageDialogSource" class="muted"></p>
+      <div class="actions">
+        <button id="openImageDisease" class="primary">開啟疾病完整條目</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+
+<section id="tab-action" class="panel">
+  <div class="organ-header">
+    <div>
+      <div class="eyebrow">牧場處置計畫</div>
+      <h2>疾病處置與治療決策卡</h2>
+      <p class="muted">先選疾病，再將「原書內容」與「系統現場處置輔助」分開查看。原書中的藥物、劑量、疫苗與防治方式不自動視為台灣現行標準。</p>
+    </div>
+    <button id="printActionPlan" class="secondary">列印／存成 PDF</button>
+  </div>
+
+  <div class="action-selector">
+    <input id="actionDiseaseSearch" placeholder="搜尋疾病，例如：藍耳病、豬瘟、傳染性胸膜肺炎…"/>
+    <select id="actionDiseaseSelect"><option value="">選擇疾病</option></select>
+  </div>
+
+  <div id="actionEmpty" class="prose">
+    <h3>使用方式</h3>
+    <p>從上方選擇疾病，系統會整理成：立即處置、採樣／確認、原書防治、原書治療、環境改善、生物安全與追蹤指標。</p>
+  </div>
+
+  <div id="actionPlan" class="action-plan hidden">
+    <div class="action-hero">
+      <div>
+        <div id="actionCategory" class="eyebrow"></div>
+        <h2 id="actionTitle"></h2>
+        <div id="actionTags" class="chips compact-chips"></div>
+      </div>
+      <div class="action-hero-buttons">
+        <button id="openActionDiseaseDetail" class="primary">查看完整圖譜</button>
+        <button id="resetActionChecklist" class="secondary">重設勾選</button>
+      </div>
+    </div>
+
+    <div class="action-alert">
+      <b>重要：</b>「原書內容」直接整理自你提供的圖譜；「系統輔助」是依症候群與管理邏輯產生的現場工作清單。涉及處方藥、抗菌藥、疫苗、停藥期、法定通報或禁限用規定時，必須另依台灣現行規範與獸醫師判斷確認。
+    </div>
+
+    <div class="action-grid">
+      <section class="action-card urgent-card">
+        <div class="action-card-head"><span>①</span><h3>立即處置</h3><span class="badge">系統輔助</span></div>
+        <div id="actionImmediate" class="checklist"></div>
+      </section>
+
+      <section class="action-card">
+        <div class="action-card-head"><span>②</span><h3>採樣與確認</h3><span class="badge">系統輔助＋原書診斷</span></div>
+        <div id="actionDiagnostics" class="checklist"></div>
+      </section>
+
+      <section class="action-card">
+        <div class="action-card-head"><span>③</span><h3>原書防治措施</h3><span class="badge">原書內容</span></div>
+        <div id="actionControl" class="source-box"></div>
+      </section>
+
+      <section class="action-card">
+        <div class="action-card-head"><span>④</span><h3>原書治療／方劑</h3><span class="badge">原書內容</span></div>
+        <div id="actionTreatment" class="source-box"></div>
+      </section>
+
+      <section class="action-card">
+        <div class="action-card-head"><span>⑤</span><h3>環境改善</h3><span class="badge">系統輔助</span></div>
+        <div id="actionEnvironment" class="checklist"></div>
+      </section>
+
+      <section class="action-card">
+        <div class="action-card-head"><span>⑥</span><h3>生物安全</h3><span class="badge">系統輔助</span></div>
+        <div id="actionBiosecurity" class="checklist"></div>
+      </section>
+
+      <section class="action-card action-card-wide">
+        <div class="action-card-head"><span>⑦</span><h3>追蹤指標</h3><span class="badge">系統輔助</span></div>
+        <div id="actionMonitoring" class="metric-grid"></div>
+      </section>
+
+      <section class="action-card action-card-wide">
+        <div class="action-card-head"><span>⑧</span><h3>原書診斷重點</h3><span class="badge">原書內容</span></div>
+        <div id="actionDiagnosisSource" class="source-box"></div>
+      </section>
+    </div>
+  </div>
+</section>
+
+<section id="tab-favorites" class="panel">
+  <h2>我的重點疾病</h2>
+  <div id="favoriteList" class="cards"></div>
+</section>
+
+
+<section id="tab-tracker" class="panel">
+  <div class="tracker-head">
+    <div>
+      <div class="eyebrow">病例追蹤</div>
+      <h2>病例追蹤與處置成效趨勢</h2>
+      <p class="muted">同一病例可連續記錄 第 0 天、第 1 天、第 2 天… 的發病、死亡、體溫、採食、飲水與現場處置，觀察趨勢是否改善、持平或惡化。</p>
+    </div>
+    <div class="tracker-head-actions">
+      <button id="newTrackedCase" class="primary">＋ 建立病例</button>
+      <button id="exportTrackedCases" class="secondary">匯出病例 JSON</button>
+    </div>
+  </div>
+
+  <div class="tracker-layout">
+    <aside class="tracker-sidebar">
+      <div class="tracker-filter-row">
+        <input id="trackerSearch" placeholder="搜尋病例、棟舍、疾病"/>
+        <select id="trackerStatusFilter">
+          <option value="">全部狀態</option>
+          <option value="open">追蹤中</option>
+          <option value="watch">持續觀察</option>
+          <option value="closed">已結案</option>
+        </select>
+      </div>
+      <div id="trackedCaseList" class="tracked-case-list"></div>
+    </aside>
+
+    <section class="tracker-main">
+      <div id="trackerEmpty" class="prose">
+        <h3>尚未選擇追蹤病例</h3>
+        <p>可按「建立病例」，或從症狀鑑別結果直接帶入候選疾病建立追蹤紀錄。</p>
+      </div>
+
+      <div id="trackerDetail" class="hidden">
+        <div class="tracker-case-hero">
+          <div>
+            <div id="trackerCaseMeta" class="eyebrow"></div>
+            <h2 id="trackerCaseTitle"></h2>
+            <div id="trackerCaseBadges" class="chips compact-chips"></div>
+          </div>
+          <div class="tracker-head-actions">
+            <select id="trackerCaseStatus">
+              <option value="open">追蹤中</option>
+              <option value="watch">持續觀察</option>
+              <option value="closed">已結案</option>
+            </select>
+            <button id="printTrackedCase" class="secondary">列印／PDF</button>
+            <button id="deleteTrackedCase" class="secondary">刪除病例</button>
+          </div>
+        </div>
+
+        <div id="trackerKpis" class="tracker-kpis"></div>
+        <div id="trackerTrendNotice" class="tracker-trend"></div>
+
+        <div class="tracker-charts">
+          <section class="chart-card">
+            <h3>發病頭數與採食趨勢</h3>
+            <canvas id="caseHealthChart" height="220"></canvas>
+          </section>
+          <section class="chart-card">
+            <h3>每日死亡趨勢</h3>
+            <canvas id="caseDeathChart" height="220"></canvas>
+          </section>
+        </div>
+
+        <div class="tracker-entry-layout">
+          <section class="tracker-entry-form">
+            <div class="section-title-row">
+              <h3>新增追蹤紀錄</h3>
+              <span id="trackerNextDay" class="badge"></span>
+            </div>
+            <div class="meta-grid">
+              <input id="trackDate" type="date"/>
+              <input id="trackSick" inputmode="numeric" placeholder="目前病豬頭數"/>
+              <input id="trackDeaths" inputmode="numeric" placeholder="今日死亡頭數"/>
+              <input id="trackTemp" inputmode="decimal" placeholder="代表性平均體溫 ℃"/>
+              <input id="trackFeed" inputmode="decimal" placeholder="採食量 %（正常=100）"/>
+              <input id="trackWater" inputmode="decimal" placeholder="飲水量 %（正常=100）"/>
+              <select id="trackResp">
+                <option value="">呼吸症狀程度</option><option value="0">0 無</option><option value="1">1 輕</option><option value="2">2 中</option><option value="3">3 重</option>
+              </select>
+              <select id="trackDiarrhea">
+                <option value="">腹瀉程度</option><option value="0">0 無</option><option value="1">1 輕</option><option value="2">2 中</option><option value="3">3 重</option>
+              </select>
+            </div>
+            <textarea id="trackAction" rows="3" placeholder="今天做了哪些處置／治療／環境調整（請照實記錄）"></textarea>
+            <textarea id="trackNote" rows="3" placeholder="其他觀察：精神、糞便、咳嗽、流產、病理解剖、用藥反應等"></textarea>
+            <button id="saveTrackEntry" class="primary">儲存今日紀錄</button>
+          </section>
+
+          <section>
+            <div class="section-title-row">
+              <h3>時間軸</h3>
+              <button id="exportTrackedCaseCsv" class="secondary">匯出 CSV</button>
+            </div>
+            <div id="trackerTimeline" class="tracker-timeline"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>
+
+<dialog id="trackedCaseDialog">
+  <div class="dialog-head">
+    <div><div class="eyebrow">新增病例</div><h2>建立追蹤病例</h2></div>
+    <button id="closeTrackedCaseDialog" class="ghost">關閉</button>
+  </div>
+  <div class="tracked-case-dialog-body">
+    <div class="meta-grid">
+      <input id="newCaseName" placeholder="病例名稱，例如：保育 3 棟呼吸道病例"/>
+      <input id="newCaseBarn" placeholder="棟舍／單位"/>
+      <input id="newCasePen" placeholder="欄位／批次"/>
+      <select id="newCaseAgeGroup">
+        <option value="">豬隻階段</option>
+        <option>新生仔豬</option><option>哺乳仔豬</option><option>保育豬</option><option>肉豬</option>
+        <option>後備母豬</option><option>懷孕母豬</option><option>哺乳母豬</option><option>公豬</option>
+      </select>
+      <input id="newCaseStartDate" type="date"/>
+      <input id="newCaseHeadcount" inputmode="numeric" placeholder="病例群總頭數"/>
+      <input id="newCaseSick" inputmode="numeric" placeholder="Day 0 病豬頭數"/>
+      <input id="newCaseDead" inputmode="numeric" placeholder="Day 0 已死亡頭數"/>
+    </div>
+    <label class="field-label">主要懷疑疾病</label>
+    <select id="newCaseDisease"><option value="">尚未確定／持續鑑別</option></select>
+    <textarea id="newCaseSymptoms" rows="3" placeholder="主要症狀／病變摘要"></textarea>
+    <textarea id="newCaseInitialAction" rows="3" placeholder="Day 0 已採取的處置／治療／環境調整"></textarea>
+    <div class="actions"><button id="saveNewTrackedCase" class="primary">建立並開始追蹤</button></div>
+  </div>
+</dialog>
+
+<section id="tab-cases" class="panel">
+  <div class="section-title-row"><h2>病例紀錄</h2><button id="clearCases" class="secondary">清除全部</button></div>
+  <div id="caseList" class="cards"></div>
+</section>
+
+
+<section id="tab-lab" class="panel">
+  <div class="lab-head">
+    <div>
+      <div class="eyebrow">採樣與檢驗管理</div>
+      <h2>採樣與檢驗管理中心</h2>
+      <p class="muted">把病例、樣本、檢驗方法與結果串在一起。可從追蹤病例建立送檢單，記錄採樣日期、樣本類型、PCR／培養／抗體等結果，並標記「待檢驗、檢驗支持、未支持、確診、排除」。</p>
+    </div>
+    <div class="lab-head-actions">
+      <button id="newLabOrder" class="primary">＋ 建立送檢</button>
+      <button id="exportLabJson" class="secondary">匯出檢驗 JSON</button>
+    </div>
+  </div>
+
+  <div id="labKpis" class="dashboard-kpis"></div>
+
+  <div class="lab-layout">
+    <aside class="lab-sidebar">
+      <div class="tracker-filter-row">
+        <input id="labSearch" placeholder="搜尋病例、疾病、樣本、檢驗"/>
+        <select id="labStatusFilter">
+          <option value="">全部狀態</option>
+          <option value="pending">待送／待檢</option>
+          <option value="processing">檢驗中</option>
+          <option value="support">檢驗支持</option>
+          <option value="confirmed">確診</option>
+          <option value="excluded">排除</option>
+          <option value="negative">未支持</option>
+        </select>
+      </div>
+      <div id="labOrderList" class="lab-order-list"></div>
+    </aside>
+
+    <section class="lab-main">
+      <div id="labEmpty" class="prose">
+        <h3>尚未選擇送檢紀錄</h3>
+        <p>可按「建立送檢」，或從病例追蹤頁將該病例直接帶入送檢。</p>
+      </div>
+
+      <div id="labDetail" class="hidden">
+        <div class="lab-order-hero">
+          <div>
+            <div id="labOrderMeta" class="eyebrow"></div>
+            <h2 id="labOrderTitle"></h2>
+            <div id="labOrderBadges" class="chips compact-chips"></div>
+          </div>
+          <div class="lab-head-actions">
+            <select id="labOrderStatus">
+              <option value="pending">待送／待檢</option>
+              <option value="processing">檢驗中</option>
+              <option value="support">檢驗支持</option>
+              <option value="confirmed">確診</option>
+              <option value="excluded">排除</option>
+              <option value="negative">未支持</option>
+            </select>
+            <button id="printLabOrder" class="secondary">列印送檢單</button>
+            <button id="deleteLabOrder" class="secondary">刪除</button>
+          </div>
+        </div>
+
+        <div class="lab-grid">
+          <section class="lab-card">
+            <h3>送檢資訊</h3>
+            <div id="labOrderInfo" class="source-box"></div>
+          </section>
+
+          <section class="lab-card">
+            <h3>樣本清單</h3>
+            <div id="labSampleList" class="lab-sample-list"></div>
+            <button id="addLabSample" class="secondary">＋ 新增樣本</button>
+          </section>
+
+          <section class="lab-card lab-card-wide">
+            <div class="section-title-row">
+              <h3>檢驗結果</h3>
+              <button id="addLabResult" class="secondary">＋ 新增結果</button>
+            </div>
+            <div id="labResultList" class="lab-result-list"></div>
+          </section>
+
+          <section class="lab-card lab-card-wide">
+            <h3>病例判讀整合</h3>
+            <div id="labInterpretation" class="lab-interpretation"></div>
+          </section>
+
+          <section class="lab-card lab-card-wide ast-license-card">
+            <div class="section-title-row">
+              <div>
+                <div class="eyebrow">藥敏 × 台灣許可</div>
+                <h3>藥敏結果 × 台灣有效許可藥品</h3>
+              </div>
+              <button id="openAllLicensesFromAst" class="secondary">開啟台灣藥品許可</button>
+            </div>
+            <div class="license-warning">
+              此區只做「檢驗結果與官方許可證的交叉篩選」，不是處方。S／I／R 的意義仍取決於實驗室使用的判讀標準、菌種、感染部位、採樣品質及藥物在豬隻的藥動學。系統不自動產生劑量、療程或停藥期。
+            </div>
+            <div id="astLicenseSummary" class="ast-summary"></div>
+            <div id="astLicenseMatches" class="ast-license-matches"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>
+
+<dialog id="newLabOrderDialog">
+  <div class="dialog-head">
+    <div><div class="eyebrow">新增送檢</div><h2>建立送檢紀錄</h2></div>
+    <button id="closeLabOrderDialog" class="ghost">關閉</button>
+  </div>
+  <div class="tracked-case-dialog-body">
+    <div class="meta-grid">
+      <select id="labCaseSelect"><option value="">選擇追蹤病例（可不選）</option></select>
+      <input id="labOrderName" placeholder="送檢名稱，例如：保育 3 棟呼吸道 PCR"/>
+      <input id="labSampleDate" type="date"/>
+      <input id="labDestination" placeholder="送檢單位／實驗室"/>
+      <input id="labSuspectDisease" placeholder="懷疑疾病"/>
+      <input id="labCollector" placeholder="採樣人"/>
+    </div>
+    <textarea id="labClinicalSummary" rows="3" placeholder="臨床症狀、病理解剖、發病率／死亡率摘要"></textarea>
+    <textarea id="labOrderNote" rows="3" placeholder="送檢備註"></textarea>
+    <div class="actions"><button id="saveNewLabOrder" class="primary">建立送檢</button></div>
+  </div>
+</dialog>
+
+<dialog id="labSampleDialog">
+  <div class="dialog-head">
+    <div><div class="eyebrow">樣本</div><h2>新增樣本</h2></div>
+    <button id="closeLabSampleDialog" class="ghost">關閉</button>
+  </div>
+  <div class="tracked-case-dialog-body">
+    <div class="meta-grid">
+      <input id="sampleId" placeholder="樣本編號"/>
+      <select id="sampleType">
+        <option value="">樣本類型</option>
+        <option>血液</option><option>血清</option><option>鼻拭子</option><option>口咽拭子</option>
+        <option>糞便</option><option>腸內容物</option><option>肺組織</option><option>淋巴結</option>
+        <option>脾臟</option><option>腎臟</option><option>腦／腦膜</option><option>關節液</option>
+        <option>流產胎兒</option><option>胎盤</option><option>皮膚病灶</option><option>其他</option>
+      </select>
+      <input id="sampleAnimalId" placeholder="豬號／欄位／來源"/>
+      <input id="sampleStorage" placeholder="保存方式／溫度"/>
+    </div>
+    <textarea id="sampleNote" rows="3" placeholder="樣本狀況與備註"></textarea>
+    <div class="actions"><button id="saveLabSample" class="primary">加入樣本</button></div>
+  </div>
+</dialog>
+
+<dialog id="labResultDialog">
+  <div class="dialog-head">
+    <div><div class="eyebrow">檢驗結果</div><h2>新增檢驗結果</h2></div>
+    <button id="closeLabResultDialog" class="ghost">關閉</button>
+  </div>
+  <div class="tracked-case-dialog-body">
+    <div class="meta-grid">
+      <select id="resultMethod">
+        <option value="">檢驗方法</option>
+        <option>PCR</option><option>qPCR</option><option>RT-PCR</option><option>細菌培養</option>
+        <option>藥物敏感性</option><option>ELISA 抗體</option><option>抗原快篩</option>
+        <option>病理組織</option><option>免疫組織化學</option><option>其他</option>
+      </select>
+      <input id="resultTarget" placeholder="檢驗病原／目標，例如 PRRSV"/>
+      <select id="resultValue">
+        <option value="">結果</option>
+        <option value="positive">陽性</option>
+        <option value="negative">陰性</option>
+        <option value="suspect">疑似／臨界</option>
+        <option value="mixed">混合／多重</option>
+        <option value="other">其他</option>
+      </select>
+      <input id="resultDate" type="date"/>
+      <input id="resultCt" inputmode="decimal" placeholder="Ct 值（如適用）"/>
+      <input id="resultLabNo" placeholder="實驗室報告編號"/>
+    </div>
+
+    <div id="astFields" class="ast-fields hidden">
+      <div class="eyebrow">抗菌藥物敏感性</div>
+      <h3>藥物敏感性資料</h3>
+      <div class="meta-grid">
+        <input id="astOrganism" placeholder="分離菌／菌種，例如 Actinobacillus pleuropneumoniae"/>
+        <input id="astDrug" placeholder="抗菌藥成分，例如 Florfenicol"/>
+        <select id="astInterpretation">
+          <option value="">S / I / R 判讀</option>
+          <option value="S">S｜敏感</option>
+          <option value="I">I｜中介／增加暴露後可能有效</option>
+          <option value="R">R｜抗藥</option>
+          <option value="NA">未提供／無適用判讀臨界值</option>
+        </select>
+        <input id="astMic" placeholder="MIC／抑菌圈，例如 MIC 1 μg/mL"/>
+        <input id="astStandard" placeholder="判讀標準，例如 CLSI VET（如報告有寫）"/>
+        <input id="astSampleRef" placeholder="對應樣本編號，例如 S1"/>
+      </div>
+      <div class="notice">若實驗室報告沒有 S／I／R 或沒有明確判讀臨界值，不要自行把 MIC 數值轉成敏感／抗藥。</div>
+    </div>
+
+    <textarea id="resultDetail" rows="4" placeholder="詳細結果、菌種、藥敏、抗體 S/P、病理描述等"></textarea>
+    <div class="actions"><button id="saveLabResult" class="primary">儲存結果</button></div>
+  </div>
+</dialog>
+
+
+<section id="tab-taiwan" class="panel">
+  <div class="taiwan-head">
+    <div>
+      <div class="eyebrow">台灣現行實務</div>
+      <h2>台灣現行防疫與實務層</h2>
+      <p class="muted">和原書資料分開呈現。此頁只放入已由台灣官方網站或台灣動物用藥品許可資料核對過的內容；沒有官方依據的疾病不自行補成台灣規範。</p>
+    </div>
+    <div class="taiwan-asof">資料核對日：2026-09-26（官方＋期刊＋課堂／田間分層）</div>
+  </div>
+
+  <div class="taiwan-alert">
+    <b>台灣實務優先原則：</b>疑似甲類動物傳染病時，先通報與限制移動，不要用一般場內治療流程拖延。原書藥物、疫苗與方劑不能直接視為台灣現行標準。
+  </div>
+
+  <div class="taiwan-grid">
+    <section class="taiwan-card taiwan-card-wide">
+      <div class="section-title-row">
+        <div>
+          <div class="eyebrow">近期官方更新</div>
+          <h3>台灣豬病防疫近期動態</h3>
+        </div>
+        <span id="taiwanRecentAsOf" class="badge"></span>
+      </div>
+      <div id="taiwanRecentUpdates" class="taiwan-recent-updates"></div>
+    </section>
+
+    <section class="taiwan-card taiwan-card-wide">
+      <div class="section-title-row">
+        <div>
+          <div class="eyebrow">證據分層</div>
+          <h3>資料可信度與來源類型</h3>
+        </div>
+      </div>
+      <div id="taiwanEvidenceLegend" class="taiwan-evidence-legend"></div>
+    </section>
+
+    <section class="taiwan-card taiwan-card-wide">
+      <div class="section-title-row">
+        <div>
+          <div class="eyebrow">PRRS 台灣情報</div>
+          <h3>台灣 PRRS 疫情動態</h3>
+        </div>
+        <span class="badge">更新至 2026-09-26</span>
+      </div>
+      <div id="taiwanPrrsSummary" class="taiwan-prrs-summary"></div>
+      <div id="taiwanPrrsDynamics" class="taiwan-intel-list"></div>
+      <div id="taiwanPrrsManagement" class="taiwan-management-points"></div>
+    </section>
+
+    <section class="taiwan-card taiwan-card-wide">
+      <div class="section-title-row">
+        <div>
+          <div class="eyebrow">新興病原</div>
+          <h3>近期田間／課程新興病原情報</h3>
+        </div>
+      </div>
+      <div class="notice compact-notice">這一區可包含課堂口述或田間觀察，因此不等同官方全國監測；每筆資料都會標示來源層級與限制。</div>
+      <div id="taiwanEmergingPathogens" class="taiwan-emerging-list"></div>
+    </section>
+
+    <section class="taiwan-card">
+      <div class="eyebrow">地方聯絡資訊</div>
+      <h3>雲林縣通報與聯絡</h3>
+      <div id="taiwanLocalContact"></div>
+    </section>
+
+    <section class="taiwan-card">
+      <div class="eyebrow">共通原則</div>
+      <h3>台灣共同原則</h3>
+      <div id="taiwanGeneralRules"></div>
+    </section>
+
+    <section class="taiwan-card taiwan-card-wide">
+      <div class="section-title-row">
+        <div>
+          <div class="eyebrow">已核對疾病資料</div>
+          <h3>已建立台灣現行資料的疾病</h3>
+        </div>
+        <input id="taiwanSearch" placeholder="搜尋：非洲豬瘟、口蹄疫、豬瘟、PRRS"/>
+      </div>
+      <div id="taiwanDiseaseList" class="taiwan-disease-list"></div>
+    </section>
+  </div>
+</section>
+
+<dialog id="taiwanDiseaseDialog">
+  <div class="dialog-head">
+    <div>
+      <div id="taiwanDialogMeta" class="eyebrow"></div>
+      <h2 id="taiwanDialogTitle"></h2>
+    </div>
+    <button id="closeTaiwanDialog" class="ghost">關閉</button>
+  </div>
+  <div id="taiwanDialogBody" class="taiwan-dialog-body"></div>
+</dialog>
+
+<dialog id="emergingPathogenDialog">
+  <div class="dialog-head">
+    <div>
+      <div id="emergingPathogenMeta" class="eyebrow"></div>
+      <h2 id="emergingPathogenTitle"></h2>
+    </div>
+    <button id="closeEmergingPathogenDialog" class="ghost">關閉</button>
+  </div>
+  <div id="emergingPathogenBody" class="taiwan-dialog-body"></div>
+</dialog>
+
+
+<section id="tab-licenses" class="panel">
+  <div class="taiwan-head">
+    <div>
+      <div class="eyebrow">台灣動物用藥品許可</div>
+      <h2>台灣動物用藥品／疫苗許可查詢</h2>
+      <p class="muted">只顯示本版已由農業部動植物防疫檢疫署官方資料核對，且在 2026-09-25 尚未到期的許可證。沒有官方來源的藥品不自行加入。</p>
+    </div>
+    <a class="secondary license-official-link" href="https://amdrug2.aphia.gov.tw/license-query" target="_blank" rel="noopener">開啟官方許可證查詢</a>
+  </div>
+
+  <div class="taiwan-alert">
+    <b>重要：</b>此頁不是自動開藥系統。抗菌藥、疫苗、適應症、使用對象與處方限制以有效許可證、產品標籤／仿單及執業獸醫師指示為準。官方網頁檢索頁未必顯示停藥期，因此 V11 不自行填入停藥期。
+  </div>
+
+  <div class="license-filters">
+    <input id="licenseSearch" placeholder="搜尋疾病、成分、產品，例如：胸膜肺炎、Tilmicosin、PRRS"/>
+    <select id="licenseCategory">
+      <option value="">全部類型</option>
+      <option value="抗菌藥">抗菌藥</option>
+      <option value="疫苗">疫苗</option>
+    </select>
+    <select id="licenseDiseaseFilter"><option value="">全部疾病</option></select>
+  </div>
+
+  <div class="license-summary">
+    <span id="licenseCount" class="muted"></span>
+  </div>
+
+  <div id="licenseGrid" class="license-grid"></div>
+</section>
+
+<dialog id="licenseDialog">
+  <div class="dialog-head">
+    <div>
+      <div id="licenseDialogMeta" class="eyebrow"></div>
+      <h2 id="licenseDialogTitle"></h2>
+    </div>
+    <button id="closeLicenseDialog" class="ghost">關閉</button>
+  </div>
+  <div id="licenseDialogBody" class="taiwan-dialog-body"></div>
+</dialog>
+
+
+<section id="tab-treatment" class="panel">
+  <div class="tracker-head">
+    <div>
+      <div class="eyebrow">治療成效閉環</div>
+      <h2>治療方案與成效閉環</h2>
+      <p class="muted">把「做了什麼處置」和 第 0 天～第 N 天 的病豬、死亡、採食與藥敏結果放在同一個病例裡，形成牧場自己的歷史治療資料庫。</p>
+    </div>
+    <div class="tracker-head-actions">
+      <button id="newTreatmentPlan" class="primary">＋ 建立治療方案</button>
+      <button id="exportTreatmentJson" class="secondary">匯出治療 JSON</button>
+    </div>
+  </div>
+
+  <div id="treatmentKpis" class="dashboard-kpis"></div>
+
+  <div class="treatment-layout">
+    <aside class="treatment-sidebar">
+      <div class="tracker-filter-row">
+        <input id="treatmentSearch" placeholder="搜尋病例、疾病、產品、有效成分"/>
+        <select id="treatmentOutcomeFilter">
+          <option value="">全部結果</option>
+          <option value="active">進行中</option>
+          <option value="improving">改善</option>
+          <option value="no_response">無明顯反應</option>
+          <option value="worsening">惡化</option>
+          <option value="stopped">停止／改方案</option>
+        </select>
+      </div>
+      <div id="treatmentPlanList" class="tracked-case-list"></div>
+    </aside>
+
+    <section class="treatment-main">
+      <div id="treatmentEmpty" class="prose">
+        <h3>尚未選擇治療方案</h3>
+        <p>可以從追蹤病例或藥敏結果建立方案。系統只記錄你實際採取的處置，不會自動替你決定劑量或療程。</p>
+      </div>
+
+      <div id="treatmentDetail" class="hidden">
+        <div class="tracker-case-hero">
+          <div>
+            <div id="treatmentMeta" class="eyebrow"></div>
+            <h2 id="treatmentTitle"></h2>
+            <div id="treatmentBadges" class="chips compact-chips"></div>
+          </div>
+          <div class="tracker-head-actions">
+            <select id="treatmentOutcome">
+              <option value="active">進行中</option>
+              <option value="improving">改善</option>
+              <option value="no_response">無明顯反應</option>
+              <option value="worsening">惡化</option>
+              <option value="stopped">停止／改方案</option>
+            </select>
+            <button id="printTreatment" class="secondary">列印／PDF</button>
+            <button id="deleteTreatment" class="secondary">刪除</button>
+          </div>
+        </div>
+
+        <div id="treatmentSummary" class="treatment-summary"></div>
+
+        <div class="tracker-charts">
+          <section class="chart-card">
+            <h3>病豬／採食變化</h3>
+            <canvas id="treatmentHealthChart" height="220"></canvas>
+          </section>
+          <section class="chart-card">
+            <h3>每日死亡變化</h3>
+            <canvas id="treatmentDeathChart" height="220"></canvas>
+          </section>
+        </div>
+
+        <div class="treatment-grid">
+          <section class="lab-card">
+            <h3>治療／處置內容</h3>
+            <div id="treatmentPlanInfo" class="source-box"></div>
+          </section>
+
+          <section class="lab-card">
+            <h3>藥敏與台灣許可對照</h3>
+            <div id="treatmentAstMatch" class="ast-license-matches"></div>
+          </section>
+
+          <section class="lab-card lab-card-wide">
+            <div class="section-title-row">
+              <h3>每日反應紀錄</h3>
+              <button id="addTreatmentReview" class="secondary">＋ 新增評估</button>
+            </div>
+            <div id="treatmentReviewList" class="tracker-timeline"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>
+
+<dialog id="newTreatmentDialog">
+  <div class="dialog-head">
+    <div><div class="eyebrow">新增治療方案</div><h2>建立治療／處置方案</h2></div>
+    <button id="closeTreatmentDialog" class="ghost">關閉</button>
+  </div>
+  <div class="tracked-case-dialog-body">
+    <div class="meta-grid">
+      <select id="treatmentCaseSelect"><option value="">選擇追蹤病例</option></select>
+      <input id="treatmentName" placeholder="方案名稱，例如：保育3棟 APP 第1方案"/>
+      <input id="treatmentStartDate" type="date"/>
+      <input id="treatmentEndDate" type="date"/>
+      <input id="treatmentProduct" placeholder="實際使用產品名稱"/>
+      <input id="treatmentIngredient" placeholder="有效成分"/>
+      <input id="treatmentRoute" placeholder="給藥／處置方式，例如 飲水、飼料、注射、環境調整"/>
+      <input id="treatmentVet" placeholder="獸醫師／開立者（如有）"/>
+    </div>
+    <textarea id="treatmentDoseNote" rows="3" placeholder="實際執行內容：劑量、頻率、療程、混藥方式等請照實記錄；系統不會自行產生"></textarea>
+    <textarea id="treatmentEnvAction" rows="3" placeholder="同時做的環境／管理調整，例如降密度、通風、飲水、分群"></textarea>
+    <textarea id="treatmentGoal" rows="3" placeholder="這次方案的目標，例如 72 小時內死亡下降、採食回升"></textarea>
+    <div class="actions"><button id="saveNewTreatment" class="primary">建立方案</button></div>
+  </div>
+</dialog>
+
+<dialog id="treatmentReviewDialog">
+  <div class="dialog-head">
+    <div><div class="eyebrow">治療成效評估</div><h2>新增治療成效評估</h2></div>
+    <button id="closeTreatmentReviewDialog" class="ghost">關閉</button>
+  </div>
+  <div class="tracked-case-dialog-body">
+    <div class="meta-grid">
+      <input id="reviewDate" type="date"/>
+      <select id="reviewAssessment">
+        <option value="">主觀評估</option>
+        <option value="improving">改善</option>
+        <option value="no_response">無明顯反應</option>
+        <option value="worsening">惡化</option>
+      </select>
+      <input id="reviewSick" inputmode="numeric" placeholder="目前病豬頭數"/>
+      <input id="reviewDeaths" inputmode="numeric" placeholder="今日死亡頭數"/>
+      <input id="reviewFeed" inputmode="decimal" placeholder="採食量 %"/>
+      <input id="reviewTemp" inputmode="decimal" placeholder="代表性平均體溫 ℃"/>
+    </div>
+    <textarea id="reviewNote" rows="4" placeholder="觀察：精神、呼吸、腹瀉、病理解剖、停藥／換藥原因等"></textarea>
+    <div class="actions"><button id="saveTreatmentReview" class="primary">儲存評估</button></div>
+  </div>
+</dialog>
+
+
+<section id="tab-history" class="panel">
+  <div class="tracker-head">
+    <div>
+      <div class="eyebrow">歷史成效分析</div>
+      <h2>牧場歷史治療成效分析</h2>
+      <p class="muted">將歷次病例、藥敏與治療方案彙整，依疾病、菌種與有效成分比較過去的改善率、惡化率、平均反應天數與死亡變化。所有結果只代表本牧場歷史紀錄，不等於藥物因果療效證明。</p>
+    </div>
+    <div class="tracker-head-actions">
+      <button id="refreshHistoryAnalysis" class="secondary">重新分析</button>
+      <button id="exportHistoryCsv" class="secondary">匯出摘要 CSV</button>
+    </div>
+  </div>
+
+  <div class="history-filters">
+    <select id="historyDiseaseFilter"><option value="">全部疾病</option></select>
+    <select id="historyIngredientFilter"><option value="">全部有效成分</option></select>
+    <select id="historyAstFilter">
+      <option value="">全部藥敏狀態</option>
+      <option value="S">S｜敏感</option>
+      <option value="I">I｜中介</option>
+      <option value="R">R｜抗藥</option>
+      <option value="NA">未提供判讀</option>
+      <option value="none">無藥敏資料</option>
+    </select>
+    <select id="historyMinCases">
+      <option value="1">至少 1 次病例</option>
+      <option value="2">至少 2 次病例</option>
+      <option value="3">至少 3 次病例</option>
+      <option value="5">至少 5 次病例</option>
+    </select>
+  </div>
+
+  <div id="historyKpis" class="dashboard-kpis"></div>
+
+  <div class="dashboard-grid">
+    <section class="dashboard-card dashboard-card-wide">
+      <div class="section-title-row">
+        <div>
+          <div class="eyebrow">分組成效</div>
+          <h3>疾病 × 有效成分 歷史比較</h3>
+        </div>
+      </div>
+      <div id="historyGroupTable" class="dashboard-case-table"></div>
+    </section>
+
+    <section class="dashboard-card">
+      <div class="eyebrow">反應時間</div>
+      <h3>平均開始改善天數</h3>
+      <div id="historyResponseTime" class="dashboard-dist"></div>
+    </section>
+
+    <section class="dashboard-card">
+      <div class="eyebrow">失敗／惡化訊號</div>
+      <h3>歷史失敗／惡化紀錄</h3>
+      <div id="historyFailures" class="dashboard-crossbarn"></div>
+    </section>
+
+    <section class="dashboard-card dashboard-card-wide">
+      <div class="eyebrow">個別病例</div>
+      <h3>個別方案歷史紀錄</h3>
+      <div id="historyCaseTable" class="dashboard-case-table"></div>
+    </section>
+  </div>
+</section>
+
+
+<section id="tab-amr" class="panel">
+  <div class="tracker-head">
+    <div>
+      <div class="eyebrow">抗菌藥使用與抗藥性監測</div>
+      <h2>抗菌藥使用與抗藥性監測中心</h2>
+      <p class="muted">彙整實際治療方案與結構化藥敏 S／I／R 紀錄，追蹤不同有效成分的使用次數、紀錄天數、棟舍分布與 R 比例變化。這是牧場管理指標，不是群體抗藥性盛行率研究。</p>
+    </div>
+    <div class="tracker-head-actions">
+      <select id="amrRange">
+        <option value="90">近 90 天</option>
+        <option value="180">近 180 天</option>
+        <option value="365" selected>近 365 天</option>
+        <option value="all">全部資料</option>
+      </select>
+      <button id="refreshAmr" class="secondary">重新分析</button>
+      <button id="exportAmrCsv" class="secondary">匯出 CSV</button>
+    </div>
+  </div>
+
+  <div id="amrAlerts" class="dashboard-alerts"></div>
+  <div id="amrKpis" class="dashboard-kpis"></div>
+
+  <div class="dashboard-grid">
+    <section class="dashboard-card dashboard-card-wide">
+      <div class="section-title-row">
+        <div>
+          <div class="eyebrow">抗菌藥使用</div>
+          <h3>有效成分使用概況</h3>
+        </div>
+        <select id="amrIngredientFilter"><option value="">全部有效成分</option></select>
+      </div>
+      <div id="amrUsageTable" class="dashboard-case-table"></div>
+    </section>
+
+    <section class="dashboard-card">
+      <div class="eyebrow">藥敏 S／I／R</div>
+      <h3>藥敏結果分布</h3>
+      <div id="amrSirDist" class="amr-sir-list"></div>
+    </section>
+
+    <section class="dashboard-card">
+      <div class="eyebrow">棟舍使用</div>
+      <h3>棟舍重複使用訊號</h3>
+      <div id="amrBarnSignals" class="dashboard-crossbarn"></div>
+    </section>
+
+    <section class="dashboard-card dashboard-card-wide">
+      <div class="section-title-row">
+        <div>
+          <div class="eyebrow">R 趨勢</div>
+          <h3>R 紀錄時間趨勢</h3>
+        </div>
+      </div>
+      <canvas id="amrTrendChart" height="240"></canvas>
+      <p class="history-note">R 比例＝本系統中已輸入且具 S／I／R 判讀的藥敏紀錄中，判為 R 的比例。未做藥敏、未輸入、重複採樣與抽樣偏差都會影響結果。</p>
+    </section>
+
+    <section class="dashboard-card dashboard-card-wide">
+      <div class="eyebrow">明細</div>
+      <h3>抗菌藥使用／藥敏明細</h3>
+      <div id="amrDetailTable" class="dashboard-case-table"></div>
+    </section>
+  </div>
+</section>
+
+
+<section id="tab-backup" class="panel">
+  <div class="tracker-head">
+    <div>
+      <div class="eyebrow">備份與還原</div>
+      <h2>資料備份與還原</h2>
+      <p class="muted">病例、送檢、治療、收藏與工作勾選主要存放在這台裝置的瀏覽器。正式日常使用前，建議定期匯出完整備份。</p>
+    </div>
+    <div class="tracker-head-actions">
+      <span class="badge">V21.1 FIX</span>
+      <button id="exportFullBackup" class="primary">匯出完整備份</button>
+    </div>
+  </div>
+
+  <div class="backup-grid">
+    <section class="dashboard-card">
+      <div class="eyebrow">本機資料</div>
+      <h3>目前本機資料</h3>
+      <div id="backupDataSummary" class="dashboard-today"></div>
+    </section>
+
+    <section class="dashboard-card">
+      <div class="eyebrow">還原</div>
+      <h3>從備份還原</h3>
+      <p class="muted">選擇由本系統 V19 匯出的 JSON。還原前會先檢查檔案結構；不會在檢查失敗時覆蓋現有資料。</p>
+      <input id="backupFileInput" type="file" accept=".json,application/json"/>
+      <div class="actions">
+        <button id="restoreFullBackup" class="secondary">檢查並還原</button>
+      </div>
+      <div id="restoreStatus" class="notice hidden"></div>
+    </section>
+
+    <section class="dashboard-card dashboard-card-wide">
+      <div class="eyebrow">資料安全</div>
+      <h3>備份內容</h3>
+      <div class="backup-pills">
+        <span class="badge">收藏疾病</span>
+        <span class="badge">病例判斷紀錄</span>
+        <span class="badge">追蹤病例</span>
+        <span class="badge">送檢／樣本／結果</span>
+        <span class="badge">治療方案</span>
+        <span class="badge">處置清單</span>
+        <span class="badge">每日工作勾選</span>
+      </div>
+      <p class="muted">原書疾病資料、圖片、台灣現行資料與許可證資料已包含在系統檔案內，不需放入個人備份。</p>
+    </section>
+
+    <section class="dashboard-card dashboard-card-wide">
+      <div class="eyebrow">PWA 狀態</div>
+      <h3>安裝與離線狀態</h3>
+      <div id="pwaStatus" class="dashboard-today"></div>
+    </section>
+  </div>
+</section>
+
+
+<section id="tab-sync" class="panel">
+  <div class="tracker-head">
+    <div>
+      <div class="eyebrow">Google 試算表／Apps Script 同步</div>
+      <h2>多裝置雲端同步</h2>
+      <p class="muted">不用 Firebase。以 Google 試算表 + Apps Script 儲存一份加密傳輸通道上的完整系統備份，讓電腦、iPad、手機使用同一份病例資料。</p>
+    </div>
+    <div class="tracker-head-actions">
+      <span class="badge">V21.1 FIX</span>
+      <button id="syncNowBtn" class="primary">立即同步</button>
+    </div>
+  </div>
+
+  <div class="sync-grid">
+    <section class="dashboard-card">
+      <div class="eyebrow">連線設定</div>
+      <h3>Apps Script 連線設定</h3>
+      <div class="sync-form">
+        <label>網頁應用程式 /exec 網址
+          <input id="syncEndpoint" type="url" placeholder="https://script.google.com/macros/s/.../exec"/>
+        </label>
+        <label>同步代號
+          <input id="syncKey" placeholder="例如：pigfarm-main"/>
+        </label>
+        <label>同步密鑰
+          <input id="syncToken" type="password" placeholder="和 Code.gs 的 SHARED_TOKEN 相同"/>
+        </label>
+        <label class="sync-check"><input id="syncAuto" type="checkbox"/> 每次開啟系統後自動檢查雲端版本</label>
+      </div>
+      <div class="actions">
+        <button id="saveSyncSettings" class="secondary">儲存設定</button>
+        <button id="testSyncConnection" class="secondary">測試連線</button>
+      </div>
+      <div id="syncConnectionStatus" class="notice hidden"></div>
+    </section>
+
+    <section class="dashboard-card">
+      <div class="eyebrow">同步狀態</div>
+      <h3>同步狀態</h3>
+      <div id="syncStatusSummary" class="dashboard-today"></div>
+      <div class="actions">
+        <button id="pushCloudBackup" class="secondary">上傳本機 → 雲端</button>
+        <button id="pullCloudBackup" class="secondary">下載雲端 → 本機</button>
+      </div>
+      <div id="syncOperationStatus" class="notice hidden"></div>
+    </section>
+
+    <section class="dashboard-card dashboard-card-wide">
+      <div class="eyebrow">同步衝突保護</div>
+      <h3>同步保護機制</h3>
+      <div class="sync-rules">
+        <div class="cross-signal"><b>不自動覆蓋較新的資料</b><span>若雲端與本機皆有變更，「立即同步」會比較最後修改時間，並在需要覆蓋時要求確認。</span></div>
+        <div class="cross-signal"><b>每次雲端下載前先備份本機</b><span>下載雲端資料前，系統會先自動產生一份本機快照供還原。</span></div>
+        <div class="cross-signal"><b>密鑰不寫入匯出的病例備份</b><span>同步網址、同步代號與密鑰只存於本裝置 瀏覽器本機儲存空間，不包含在 V19 病例完整備份內。</span></div>
+      </div>
+    </section>
+
+    <section class="dashboard-card dashboard-card-wide">
+      <div class="eyebrow">部署設定</div>
+      <h3>Apps Script 部署步驟</h3>
+      <ol class="sync-steps">
+        <li>建立一份 Google 試算表。</li>
+        <li>從「擴充功能 → Apps Script」開啟指令碼編輯器。</li>
+        <li>貼上 V19 ZIP 內 <code>apps-script/Code.gs</code>。</li>
+        <li>在 Code.gs 修改 <code>SHARED_TOKEN</code>。</li>
+        <li>部署為 網頁應用程式，執行身分選「我」，存取權限依你的 Google 帳號／部署需求設定。</li>
+        <li>把部署後的 <code>/exec</code> 網址貼到上方，設定同一個同步代號與密鑰。</li>
+      </ol>
+      <p class="muted">建議不同牧場使用不同同步代號；同一牧場的電腦、iPad、手機使用相同同步代號。</p>
+    </section>
+  </div>
+</section>
+
+<section id="tab-about" class="panel prose">
+  <h2>系統使用原則</h2>
+  <p>本系統將圖譜中的疾病條目、臨床症狀、病理變化、診斷與防治內容整理成可搜尋資料。原書為 2020 年出版，且用藥、疫苗與法規背景並非台灣現行規範，因此「書中內容」會保留來源語境；實際治療、用藥、停藥期、疫苗與通報處置應再依台灣現行規定及獸醫師判斷確認。</p>
+  <p>病例判斷採多層線索比對：日齡／階段、發病速度、症候群、詳細症狀、病理解剖與環境管理。結果會列出多個鑑別診斷候選、支持線索、需再確認事項與現場處置重點，不會用單一症狀直接下診斷。</p>
+</section>
+</main>
+
+<dialog id="detailDialog">
+  <div class="dialog-head">
+    <div>
+      <div id="detailCategory" class="eyebrow"></div>
+      <h2 id="detailTitle"></h2>
+    </div>
+    <button id="closeDialog" class="ghost">關閉</button>
+  </div>
+  <div id="detailBody"></div>
+</dialog>
+
+<script src="data.js?v=24"></script>
+<script src="taiwan_data.js?v=24"></script>
+<script src="license_data.js?v=24"></script>
+<script src="app.js?v=24"></script>
+</body>
+</html>

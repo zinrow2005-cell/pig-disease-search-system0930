@@ -1,0 +1,543 @@
+
+:root{--bg:#f4f7fb;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--accent:#0f766e;--warn:#b45309;--danger:#b91c1c}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;background:var(--bg);color:var(--ink)}
+.topbar{padding:26px clamp(18px,4vw,48px);background:#0f172a;color:#fff;display:flex;justify-content:space-between;gap:20px;align-items:flex-start}.topbar h1{margin:3px 0 8px;font-size:clamp(26px,4vw,42px)}.topbar p{margin:0;max-width:860px;color:#cbd5e1}
+.eyebrow{font-size:12px;letter-spacing:.14em;font-weight:800;color:#14b8a6}.tabs{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);padding:0 clamp(12px,4vw,48px);display:flex;overflow:auto}.tab{border:0;background:none;padding:15px 18px;font-weight:800;color:var(--muted);white-space:nowrap}.tab.active{color:var(--accent);border-bottom:3px solid var(--accent)}
+main{padding:22px clamp(14px,4vw,48px) 60px}.panel{display:none}.panel.active{display:block}.searchbox input,textarea,select,input{width:100%;border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff;font:inherit}.searchbox input{font-size:18px;padding:17px}.filters,.meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:12px 0 18px;align-items:center}.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 4px 16px rgba(15,23,42,.04)}.card h3{margin:7px 0 8px;font-size:20px}.card p{color:#475569;line-height:1.55}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#ecfeff;color:#155e75;font-size:12px;font-weight:800;margin:2px}.muted{color:var(--muted)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}button{cursor:pointer}.primary,.secondary,.ghost{border:0;border-radius:12px;padding:11px 14px;font-weight:800}.primary{background:var(--accent);color:#fff}.secondary{background:#e2e8f0;color:#0f172a}.ghost{background:rgba(255,255,255,.12);color:inherit;border:1px solid rgba(148,163,184,.35)}.hidden{display:none!important}
+.symptom-builder{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 11px}.chip.active{background:#ccfbf1;border-color:#5eead4;color:#115e59}.matches{margin-top:16px;display:grid;gap:12px}.match{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}.score{font-size:26px;font-weight:900;color:var(--accent)}.notice{margin:16px 0;padding:14px;border-radius:14px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412}
+dialog{width:min(1050px,96vw);max-height:92vh;border:0;border-radius:22px;padding:0;box-shadow:0 25px 80px rgba(0,0,0,.3)}dialog::backdrop{background:rgba(15,23,42,.65)}.dialog-head{position:sticky;top:0;background:#fff;z-index:2;padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.dialog-head h2{margin:3px 0}.detail{padding:18px 20px}.section{margin-bottom:20px}.section h3{margin:0 0 8px;color:#0f766e}.section p{white-space:pre-wrap;line-height:1.75;color:#334155}.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}.gallery figure{margin:0;background:#f8fafc;border:1px solid var(--line);border-radius:14px;overflow:hidden}.gallery img{width:100%;height:180px;object-fit:contain;background:#fff}.gallery figcaption{padding:8px;font-size:12px;color:var(--muted)}
+.prose{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;line-height:1.75}
+@media (max-width:700px){.topbar{padding:18px}.topbar h1{font-size:28px}.cards{grid-template-columns:1fr}.gallery{grid-template-columns:repeat(2,1fr)}.gallery img{height:140px}}
+
+.wizard-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-end;margin-bottom:14px}.wizard-head h2{margin:4px 0}
+.step-pills{display:flex;gap:6px;flex-wrap:wrap}.step-pill{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);background:#fff;color:var(--muted);font-weight:900}.step-pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}.step-pill.done{background:#ccfbf1;color:#115e59;border-color:#99f6e4}
+.wizard-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px}.wizard-step{display:none}.wizard-step.active{display:block}.wizard-step h3{margin-top:0}
+.wizard-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}.syndrome .chip{font-weight:800}
+.triage-summary{background:#ecfeff;border:1px solid #a5f3fc;border-radius:16px;padding:15px;margin:16px 0}.triage-summary h3{margin:0 0 8px}.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}.summary-item{background:#fff;border-radius:12px;padding:10px;border:1px solid #cffafe}
+.match-grid{display:grid;grid-template-columns:90px 1fr;gap:14px;align-items:start}.confidence{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:#ecfdf5;border:6px solid #a7f3d0;font-size:20px;font-weight:900;color:#047857}.match h3{margin:0 0 7px}.evidence{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.evidence-box{border-radius:12px;padding:10px;background:#f8fafc;border:1px solid var(--line)}.evidence-box h4{margin:0 0 6px}.evidence-box ul{margin:0;padding-left:18px;line-height:1.6}.env-advice{margin-top:10px;padding:12px;border-radius:12px;background:#f0fdf4;border:1px solid #bbf7d0}.next-check{margin-top:10px;padding:12px;border-radius:12px;background:#fff7ed;border:1px solid #fed7aa}.section-title-row{display:flex;justify-content:space-between;align-items:center;gap:12px}.case-card-time{font-size:12px;color:var(--muted)}
+@media(max-width:700px){.wizard-head{display:block}.step-pills{margin-top:12px}.match-grid{grid-template-columns:1fr}.confidence{width:64px;height:64px}.evidence{grid-template-columns:1fr}}
+
+.diff-lab{margin:18px 0;background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px}
+.matrix-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:#fff}
+.diff-matrix{border-collapse:collapse;min-width:780px;width:100%}.diff-matrix th,.diff-matrix td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:10px;text-align:center;vertical-align:middle}.diff-matrix th:first-child,.diff-matrix td:first-child{text-align:left;position:sticky;left:0;background:#fff;z-index:1;min-width:150px}.diff-matrix thead th{background:#f8fafc;font-size:13px}.diff-matrix thead th:first-child{z-index:2}.matrix-yes{font-weight:900;color:#047857}.matrix-no{color:#94a3b8}.matrix-user-no{font-weight:900;color:#b91c1c}.matrix-user-yes{font-weight:900;color:#0f766e}
+.question-panel{margin-top:16px;border-top:1px solid var(--line);padding-top:16px}.question-list{display:grid;gap:10px}.question-row{display:flex;justify-content:space-between;gap:12px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:12px;background:#f8fafc}.question-actions{display:flex;gap:8px;flex-shrink:0}.yes-btn,.no-btn{border:0;border-radius:10px;padding:9px 12px;font-weight:900}.yes-btn{background:#ccfbf1;color:#115e59}.no-btn{background:#fee2e2;color:#991b1b}.answered{opacity:.65}.info-gain{font-size:12px;color:var(--muted);margin-top:4px}
+@media(max-width:700px){.question-row{align-items:flex-start;flex-direction:column}.question-actions{width:100%}.yes-btn,.no-btn{flex:1}}
+
+.organ-header{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin-bottom:16px}.organ-header h2{margin:4px 0}
+.organ-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.organ-card{border:1px solid var(--line);background:#fff;border-radius:18px;padding:16px;text-align:left;cursor:pointer;min-height:118px;display:flex;flex-direction:column;justify-content:space-between;transition:.18s transform,.18s box-shadow,.18s border-color}
+.organ-card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(15,23,42,.08)}.organ-card.active{border-color:#14b8a6;box-shadow:0 0 0 3px rgba(20,184,166,.12)}
+.organ-icon{font-size:28px}.organ-card b{font-size:18px}.organ-count{font-size:12px;color:var(--muted)}
+.organ-workbench{display:grid;grid-template-columns:minmax(260px,360px) 1fr;gap:16px;align-items:start}
+.organ-side{background:#fff;border:1px solid var(--line);border-radius:20px;padding:17px;position:sticky;top:64px}
+.organ-result{min-width:0}.organ-disease-results{display:grid;gap:14px}
+.organ-result-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
+.organ-result-head{display:grid;grid-template-columns:80px 1fr;gap:14px;align-items:start}.organ-score{width:70px;height:70px;border-radius:16px;background:#ecfeff;border:1px solid #a5f3fc;display:grid;place-items:center;font-size:22px;font-weight:900;color:#0f766e}
+.source-hit{padding:10px 12px;border-radius:12px;background:#f8fafc;border:1px solid var(--line);line-height:1.65;margin-top:10px}
+.source-hit mark{padding:1px 2px;border-radius:4px}
+.thumb-strip{display:flex;gap:8px;overflow:auto;margin-top:12px;padding-bottom:4px}.thumb-strip button{border:0;background:transparent;padding:0;flex:0 0 auto}.thumb-strip img{width:120px;height:92px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:10px}
+.organ-lesions .chip.active{background:#d1fae5;border-color:#6ee7b7;color:#065f46}
+.pathology-note{margin-top:18px}
+@media(max-width:850px){.organ-workbench{grid-template-columns:1fr}.organ-side{position:static}.organ-result-head{grid-template-columns:64px 1fr}.organ-score{width:60px;height:60px;font-size:18px}}
+
+.atlas-filters{display:grid;grid-template-columns:minmax(240px,2fr) repeat(3,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.atlas-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.atlas-view-toggle{display:flex;gap:8px}.atlas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.atlas-grid.large{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+.atlas-card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.atlas-card button{border:0;background:#fff;padding:0;text-align:left}.atlas-img-wrap{background:#fff;aspect-ratio:4/3;display:grid;place-items:center;overflow:hidden;border-bottom:1px solid var(--line)}
+.atlas-img-wrap img{width:100%;height:100%;object-fit:contain}.atlas-info{padding:11px}.atlas-info h4{margin:5px 0 6px;font-size:16px}.atlas-caption{font-size:13px;line-height:1.55;color:#475569;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.atlas-mini{display:flex;gap:5px;flex-wrap:wrap}.atlas-source{font-size:11px;color:var(--muted);margin-top:7px}
+.image-dialog{width:min(1100px,96vw)}.image-dialog-body{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.55fr);gap:18px;padding:18px}
+.image-dialog-body>img{width:100%;max-height:70vh;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:14px}.image-dialog-info{line-height:1.7}
+#atlasLoadMore{display:block;margin:18px auto 0}
+@media(max-width:900px){.atlas-filters{grid-template-columns:1fr 1fr}.image-dialog-body{grid-template-columns:1fr}}
+@media(max-width:600px){.atlas-filters{grid-template-columns:1fr}.atlas-grid,.atlas-grid.large{grid-template-columns:repeat(2,minmax(0,1fr))}.atlas-info{padding:8px}.atlas-caption{font-size:12px;-webkit-line-clamp:3}.atlas-img-wrap{aspect-ratio:1/1}}
+
+.action-selector{display:grid;grid-template-columns:minmax(260px,1.4fr) minmax(220px,1fr);gap:10px;margin-bottom:16px}
+.action-plan{display:block}.action-hero{background:#0f172a;color:#fff;border-radius:20px;padding:20px;display:flex;justify-content:space-between;gap:18px;align-items:flex-start}.action-hero h2{margin:4px 0 8px}.action-hero-buttons{display:flex;gap:8px;flex-wrap:wrap}.compact-chips{margin:0}
+.action-alert{margin:14px 0;padding:14px 16px;border:1px solid #fed7aa;background:#fff7ed;border-radius:14px;color:#9a3412;line-height:1.65}
+.action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.action-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;min-width:0}.action-card-wide{grid-column:1/-1}.urgent-card{border-color:#fecaca;background:#fffafa}
+.action-card-head{display:flex;gap:9px;align-items:center;margin-bottom:12px}.action-card-head>span:first-child{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#e2e8f0;font-weight:900}.action-card-head h3{margin:0;flex:1}
+.checklist{display:grid;gap:9px}.check-row{display:flex;align-items:flex-start;gap:9px;padding:9px 10px;border:1px solid var(--line);border-radius:12px;background:#f8fafc;line-height:1.5}.check-row input{width:auto;margin-top:3px}.check-row.done{opacity:.6;text-decoration:line-through}
+.source-box{white-space:pre-wrap;line-height:1.72;color:#334155;background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:12px;max-height:360px;overflow:auto}.source-box.empty{color:var(--muted);font-style:italic}
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}.metric{border:1px solid var(--line);border-radius:12px;padding:12px;background:#f8fafc}.metric b{display:block;margin-bottom:5px}.metric input{margin-top:8px}
+@media(max-width:850px){.action-grid{grid-template-columns:1fr}.action-card-wide{grid-column:auto}.action-hero{flex-direction:column}.action-selector{grid-template-columns:1fr}}
+@media print{.tabs,.topbar,.action-selector,#printActionPlan,#resetActionChecklist,#openActionDiseaseDetail{display:none!important}.panel{display:none!important}#tab-action{display:block!important}.action-card{break-inside:avoid}.action-plan{display:block!important}body{background:#fff}}
+
+.tracker-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin-bottom:14px}.tracker-head h2{margin:4px 0}.tracker-head-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.tracker-head-actions select{width:auto;min-width:120px}
+.tracker-layout{display:grid;grid-template-columns:310px minmax(0,1fr);gap:14px;align-items:start}.tracker-sidebar{background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px;position:sticky;top:64px;max-height:calc(100vh - 90px);overflow:auto}.tracker-filter-row{display:grid;gap:8px;margin-bottom:10px}.tracked-case-list{display:grid;gap:8px}
+.tracked-case-item{border:1px solid var(--line);background:#fff;border-radius:13px;padding:11px;cursor:pointer;text-align:left}.tracked-case-item.active{border-color:#14b8a6;box-shadow:0 0 0 3px rgba(20,184,166,.1)}.tracked-case-item h4{margin:3px 0 5px}.tracked-case-item p{margin:0;color:var(--muted);font-size:12px}.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}.status-open{background:#10b981}.status-watch{background:#f59e0b}.status-closed{background:#94a3b8}
+.tracker-main{min-width:0}.tracker-case-hero{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;justify-content:space-between;gap:14px}.tracker-case-hero h2{margin:4px 0}
+.tracker-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:12px 0}.tracker-kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}.tracker-kpi span{display:block;color:var(--muted);font-size:12px}.tracker-kpi b{display:block;font-size:24px;margin-top:3px}
+.tracker-trend{padding:13px 15px;border-radius:14px;margin:12px 0;border:1px solid var(--line);background:#f8fafc}.tracker-trend.improving{background:#ecfdf5;border-color:#a7f3d0;color:#065f46}.tracker-trend.worsening{background:#fff1f2;border-color:#fecdd3;color:#9f1239}.tracker-trend.stable{background:#fffbeb;border-color:#fde68a;color:#92400e}
+.tracker-charts{display:grid;grid-template-columns:1fr 1fr;gap:12px}.chart-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;min-width:0}.chart-card h3{margin-top:0}.chart-card canvas{width:100%;max-width:100%;background:#fff;border-radius:10px}
+.tracker-entry-layout{display:grid;grid-template-columns:minmax(300px,.8fr) minmax(0,1.2fr);gap:14px;margin-top:14px}.tracker-entry-form{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px;align-self:start;position:sticky;top:64px}.tracker-entry-form textarea{margin-top:9px}.tracker-timeline{display:grid;gap:10px}.timeline-item{background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px}.timeline-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.timeline-top h4{margin:0}.timeline-metrics{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.timeline-note{white-space:pre-wrap;line-height:1.55;color:#475569}.timeline-actions{margin-top:8px;display:flex;justify-content:flex-end}.tracked-case-dialog-body{padding:18px}.tracked-case-dialog-body textarea{margin-top:10px}.field-label{display:block;font-weight:800;margin:8px 0 6px}
+@media(max-width:1000px){.tracker-layout{grid-template-columns:1fr}.tracker-sidebar{position:static;max-height:none}.tracked-case-list{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}.tracker-entry-layout{grid-template-columns:1fr}.tracker-entry-form{position:static}}
+@media(max-width:750px){.tracker-head,.tracker-case-hero{flex-direction:column;align-items:stretch}.tracker-charts{grid-template-columns:1fr}}
+@media print{#tab-tracker .tracker-sidebar,#tab-tracker .tracker-entry-form,#tab-tracker .tracker-head-actions,#tab-tracker #deleteTrackedCase,#tab-tracker #trackerCaseStatus,#tab-tracker #exportTrackedCaseCsv{display:none!important}#tab-tracker .tracker-layout{display:block}.tracker-charts{grid-template-columns:1fr 1fr}}
+
+.dashboard-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin-bottom:14px}.dashboard-head h2{margin:4px 0}.dashboard-actions{display:flex;gap:8px;flex-wrap:wrap}
+.dashboard-alerts{display:grid;gap:8px;margin-bottom:12px}.dashboard-alert{padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:#fff}.dashboard-alert.danger{background:#fff1f2;border-color:#fecdd3;color:#9f1239}.dashboard-alert.warn{background:#fffbeb;border-color:#fde68a;color:#92400e}.dashboard-alert.ok{background:#ecfdf5;border-color:#a7f3d0;color:#065f46}
+.dashboard-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-bottom:14px}.dashboard-kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px}.dashboard-kpi span{display:block;color:var(--muted);font-size:12px}.dashboard-kpi b{display:block;font-size:28px;margin-top:3px}.dashboard-kpi small{display:block;color:var(--muted);margin-top:2px}
+.dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.dashboard-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px;min-width:0}.dashboard-card-wide{grid-column:1/-1}.dashboard-card h3{margin:4px 0 12px}
+.dashboard-case-table{overflow:auto}.dashboard-table{width:100%;border-collapse:collapse;min-width:820px}.dashboard-table th,.dashboard-table td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}.dashboard-table th{font-size:12px;color:var(--muted);background:#f8fafc;position:sticky;top:0}.dashboard-case-name{font-weight:800}.trend-pill{display:inline-block;padding:5px 8px;border-radius:999px;font-size:12px;font-weight:800}.trend-pill.improving{background:#dcfce7;color:#166534}.trend-pill.worsening{background:#fee2e2;color:#991b1b}.trend-pill.stable{background:#fef3c7;color:#92400e}
+.dashboard-today,.dashboard-crossbarn{display:grid;gap:9px}.dash-row{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding-bottom:8px}.dash-row:last-child{border-bottom:0}.dash-value{font-weight:900}
+.cross-signal{padding:10px;border:1px solid var(--line);border-radius:12px;background:#f8fafc}.cross-signal b{display:block;margin-bottom:4px}
+.dashboard-dist{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}.dist-item{border:1px solid var(--line);border-radius:12px;padding:11px;background:#f8fafc}.dist-bar{height:8px;background:#e2e8f0;border-radius:999px;overflow:hidden;margin-top:8px}.dist-bar>span{display:block;height:100%;background:#0f766e;border-radius:999px}
+#farmTrendChart{width:100%;max-width:100%;background:#fff;border-radius:10px}
+@media(max-width:850px){.dashboard-head{flex-direction:column;align-items:stretch}.dashboard-grid{grid-template-columns:1fr}.dashboard-card-wide{grid-column:auto}}
+
+.lab-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin-bottom:14px}.lab-head h2{margin:4px 0}.lab-head-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.lab-head-actions select{width:auto;min-width:140px}
+.lab-layout{display:grid;grid-template-columns:310px minmax(0,1fr);gap:14px;align-items:start}.lab-sidebar{background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px;position:sticky;top:64px;max-height:calc(100vh - 90px);overflow:auto}.lab-order-list{display:grid;gap:8px}
+.lab-order-item{border:1px solid var(--line);border-radius:13px;background:#fff;padding:11px;text-align:left;cursor:pointer}.lab-order-item.active{border-color:#14b8a6;box-shadow:0 0 0 3px rgba(20,184,166,.1)}.lab-order-item h4{margin:4px 0}.lab-order-item p{margin:0;color:var(--muted);font-size:12px}
+.lab-main{min-width:0}.lab-order-hero{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;justify-content:space-between;gap:14px}.lab-order-hero h2{margin:4px 0}
+.lab-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.lab-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px;min-width:0}.lab-card-wide{grid-column:1/-1}.lab-card h3{margin-top:0}
+.lab-sample-list,.lab-result-list{display:grid;gap:8px}.lab-sample,.lab-result{border:1px solid var(--line);border-radius:12px;padding:10px;background:#f8fafc}.lab-sample h4,.lab-result h4{margin:0 0 5px}.lab-item-meta{font-size:12px;color:var(--muted)}.lab-item-actions{display:flex;justify-content:flex-end;margin-top:7px}
+.lab-interpretation{display:grid;gap:10px}.interpret-box{border:1px solid var(--line);border-radius:12px;padding:12px;background:#f8fafc}.interpret-box.support{background:#ecfdf5;border-color:#a7f3d0}.interpret-box.exclude{background:#fff1f2;border-color:#fecdd3}.interpret-box.neutral{background:#fffbeb;border-color:#fde68a}
+.lab-status{display:inline-block;padding:5px 8px;border-radius:999px;font-size:12px;font-weight:800}.lab-status.pending{background:#e2e8f0;color:#334155}.lab-status.processing{background:#dbeafe;color:#1d4ed8}.lab-status.support{background:#d1fae5;color:#065f46}.lab-status.confirmed{background:#bbf7d0;color:#166534}.lab-status.excluded{background:#fee2e2;color:#991b1b}.lab-status.negative{background:#f1f5f9;color:#475569}
+@media(max-width:1000px){.lab-layout{grid-template-columns:1fr}.lab-sidebar{position:static;max-height:none}.lab-order-list{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}}
+@media(max-width:760px){.lab-head,.lab-order-hero{flex-direction:column;align-items:stretch}.lab-grid{grid-template-columns:1fr}.lab-card-wide{grid-column:auto}}
+@media print{#tab-lab .lab-sidebar,#tab-lab .lab-head-actions,#tab-lab #deleteLabOrder,#tab-lab #labOrderStatus,#tab-lab #addLabSample,#tab-lab #addLabResult{display:none!important}#tab-lab .lab-layout{display:block}}
+
+.taiwan-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin-bottom:14px}.taiwan-head h2{margin:4px 0}.taiwan-asof{font-size:13px;color:var(--muted)}
+.taiwan-alert{padding:14px 16px;border-radius:14px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;line-height:1.65;margin-bottom:14px}
+.taiwan-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.taiwan-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}.taiwan-card-wide{grid-column:1/-1}.taiwan-card h3{margin:4px 0 12px}
+.taiwan-contact-line,.taiwan-rule{padding:9px 0;border-bottom:1px dashed var(--line);line-height:1.55}.taiwan-contact-line:last-child,.taiwan-rule:last-child{border-bottom:0}
+.taiwan-disease-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:12px}.taiwan-disease-card{border:1px solid var(--line);border-radius:14px;padding:13px;background:#f8fafc}.taiwan-disease-card h4{margin:5px 0 6px}.taiwan-disease-card p{font-size:13px;color:#475569;line-height:1.55}.priority-high{background:#fee2e2;color:#991b1b}.priority-med{background:#fef3c7;color:#92400e}
+.taiwan-dialog-body{padding:18px;display:grid;gap:12px}.taiwan-section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px}.taiwan-section h3{margin:0 0 8px}.taiwan-section ul{margin:0;padding-left:20px;line-height:1.65}.source-links{display:grid;gap:7px}.source-links a{color:#0f766e;word-break:break-word}
+@media(max-width:800px){.taiwan-grid{grid-template-columns:1fr}.taiwan-card-wide{grid-column:auto}.taiwan-head{flex-direction:column;align-items:stretch}}
+
+.license-official-link{text-decoration:none;display:inline-flex;align-items:center}.license-filters{display:grid;grid-template-columns:minmax(240px,2fr) minmax(150px,.7fr) minmax(190px,1fr);gap:10px;margin-bottom:12px}.license-summary{margin-bottom:10px}
+.license-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}.license-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px}.license-card h3{margin:0}.license-card p{margin:0;color:#475569;line-height:1.55}.license-meta{display:flex;gap:6px;flex-wrap:wrap}.license-expiry{font-size:12px;color:var(--muted)}.license-indication{font-size:13px;line-height:1.6}.license-disease-tags{display:flex;gap:5px;flex-wrap:wrap}
+.license-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.license-detail-item{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:10px}.license-detail-item b{display:block;margin-bottom:4px}.license-source-link{display:inline-block;margin-top:8px;color:#0f766e;font-weight:800}.license-warning{background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:12px;color:#9a3412;line-height:1.6}
+@media(max-width:760px){.license-filters{grid-template-columns:1fr}.license-detail-grid{grid-template-columns:1fr}}
+
+.ast-fields{margin:12px 0;padding:13px;border:1px solid var(--line);border-radius:14px;background:#f8fafc}.ast-fields h3{margin:4px 0 10px}
+.ast-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:9px;margin:12px 0}.ast-summary-box{padding:10px;border:1px solid var(--line);border-radius:12px;background:#f8fafc}.ast-summary-box b{display:block;font-size:22px}
+.ast-license-matches{display:grid;gap:10px}.ast-match{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}.ast-match.s{border-color:#a7f3d0;background:#f0fdf4}.ast-match.i{border-color:#fde68a;background:#fffbeb}.ast-match.r{border-color:#fecaca;background:#fff1f2}.ast-match.na{background:#f8fafc}
+.ast-match-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.ast-match h4{margin:0 0 5px}.ast-pill{display:inline-block;padding:5px 8px;border-radius:999px;font-weight:900;font-size:12px}.ast-pill.s{background:#dcfce7;color:#166534}.ast-pill.i{background:#fef3c7;color:#92400e}.ast-pill.r{background:#fee2e2;color:#991b1b}.ast-pill.na{background:#e2e8f0;color:#475569}.ast-reason{font-size:13px;line-height:1.55;color:#475569;margin-top:7px}
+
+.treatment-layout{display:grid;grid-template-columns:310px minmax(0,1fr);gap:14px;align-items:start}.treatment-sidebar{background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px;position:sticky;top:64px;max-height:calc(100vh - 90px);overflow:auto}.treatment-main{min-width:0}
+.treatment-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}.treatment-summary-box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}.treatment-summary-box span{display:block;font-size:12px;color:var(--muted)}.treatment-summary-box b{font-size:23px;display:block;margin-top:3px}
+.treatment-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.treatment-plan-item{border:1px solid var(--line);border-radius:13px;background:#fff;padding:11px;text-align:left;cursor:pointer}.treatment-plan-item.active{border-color:#14b8a6;box-shadow:0 0 0 3px rgba(20,184,166,.1)}.treatment-plan-item h4{margin:4px 0}.treatment-plan-item p{margin:0;color:var(--muted);font-size:12px}
+.outcome-pill{display:inline-block;padding:5px 8px;border-radius:999px;font-size:12px;font-weight:900}.outcome-active{background:#dbeafe;color:#1d4ed8}.outcome-improving{background:#dcfce7;color:#166534}.outcome-no_response{background:#fef3c7;color:#92400e}.outcome-worsening{background:#fee2e2;color:#991b1b}.outcome-stopped{background:#e2e8f0;color:#475569}
+@media(max-width:1000px){.treatment-layout{grid-template-columns:1fr}.treatment-sidebar{position:static;max-height:none}.treatment-grid{grid-template-columns:1fr}}
+@media print{#tab-treatment .treatment-sidebar,#tab-treatment .tracker-head-actions,#tab-treatment #deleteTreatment,#tab-treatment #treatmentOutcome,#tab-treatment #addTreatmentReview{display:none!important}#tab-treatment .treatment-layout{display:block}}
+
+.history-filters{display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:10px;margin-bottom:14px}
+.history-score{font-weight:900;font-size:20px}.history-good{color:#166534}.history-bad{color:#991b1b}.history-neutral{color:#92400e}
+.history-note{font-size:12px;color:var(--muted);line-height:1.45}.history-case-row{cursor:pointer}.history-case-row:hover{background:#f8fafc}
+@media(max-width:850px){.history-filters{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.history-filters{grid-template-columns:1fr}}
+
+.amr-sir-list{display:grid;gap:10px}.amr-sir-row{border:1px solid var(--line);border-radius:13px;padding:11px;background:#f8fafc}.amr-sir-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.amr-sir-bar{display:flex;height:12px;border-radius:999px;overflow:hidden;background:#e2e8f0;margin-top:8px}.amr-sir-s{background:#22c55e}.amr-sir-i{background:#f59e0b}.amr-sir-r{background:#ef4444}.amr-sir-na{background:#94a3b8}.amr-metric{font-weight:900}.amr-risk-high{color:#991b1b}.amr-risk-mid{color:#92400e}.amr-risk-low{color:#166534}
+
+.risk-command-grid{display:grid;grid-template-columns:minmax(320px,.8fr) minmax(420px,1.2fr);gap:14px;margin-bottom:14px}.risk-radar-card,.daily-task-card{min-width:0}
+.risk-level{display:inline-block;padding:6px 10px;border-radius:999px;font-weight:900;font-size:12px}.risk-level.low{background:#dcfce7;color:#166534}.risk-level.medium{background:#fef3c7;color:#92400e}.risk-level.high{background:#fee2e2;color:#991b1b}.risk-level.critical{background:#7f1d1d;color:#fff}
+.risk-radar-wrap{display:grid;grid-template-columns:minmax(240px,1fr) minmax(150px,.55fr);gap:12px;align-items:center}.risk-radar-wrap canvas{width:100%;max-width:430px;height:auto;margin:auto}.risk-radar-legend{display:grid;gap:8px}.risk-legend-row{display:flex;justify-content:space-between;gap:8px;padding:8px 9px;border:1px solid var(--line);border-radius:11px;background:#f8fafc}.risk-legend-row b{font-size:15px}
+.daily-task-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.daily-task-actions select{width:auto;min-width:115px}.daily-task-summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.daily-task-summary .badge{font-size:12px}
+.daily-task-list{display:grid;gap:8px;max-height:510px;overflow:auto}.daily-task{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;border:1px solid var(--line);border-radius:13px;padding:11px;background:#fff}.daily-task.critical{border-left:5px solid #991b1b;background:#fff7f7}.daily-task.high{border-left:5px solid #f59e0b}.daily-task.normal{border-left:5px solid #64748b}.daily-task.done{opacity:.55}.daily-task.done .daily-task-title{text-decoration:line-through}.daily-task input{width:auto;margin-top:4px}.daily-task-title{font-weight:850;margin-bottom:3px}.daily-task-desc{font-size:12px;color:var(--muted);line-height:1.45}.task-priority{display:inline-block;padding:4px 7px;border-radius:999px;font-size:11px;font-weight:900}.task-priority.critical{background:#fee2e2;color:#991b1b}.task-priority.high{background:#fef3c7;color:#92400e}.task-priority.normal{background:#e2e8f0;color:#475569}.task-link{font-size:12px;white-space:nowrap}
+@media(max-width:1050px){.risk-command-grid{grid-template-columns:1fr}.risk-radar-wrap{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){.risk-radar-wrap{grid-template-columns:1fr}.daily-task{grid-template-columns:auto 1fr}.task-link{grid-column:2}}
+
+/* V16.1 mobile overflow hardening */
+#riskRadarCanvas,#farmTrendChart,#amrTrendChart,#caseHealthChart,#caseDeathChart,#treatmentHealthChart,#treatmentDeathChart{
+  display:block;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+}
+.dashboard-card,.chart-card,.risk-radar-card,.daily-task-card{min-width:0}
+@media(max-width:480px){
+  main{padding-left:8px;padding-right:8px}
+  .risk-command-grid,.dashboard-grid{min-width:0}
+  .risk-radar-wrap{min-width:0}
+  .section-title-row{align-items:flex-start;flex-wrap:wrap}
+  .daily-task-actions{width:100%}
+  .daily-task-actions select{min-width:0;flex:1}
+}
+
+.backup-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.backup-pills{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+@media(max-width:800px){.backup-grid{grid-template-columns:1fr}}
+.system-error-banner{position:fixed;left:12px;right:12px;bottom:12px;z-index:9999;background:#fff1f2;border:1px solid #fecdd3;color:#9f1239;padding:10px 12px;border-radius:12px;box-shadow:0 10px 30px rgba(15,23,42,.18);font-size:13px}
+
+.sync-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.sync-form{display:grid;gap:10px}.sync-form label{display:grid;gap:5px;font-size:13px;font-weight:700}.sync-check{grid-template-columns:auto 1fr!important;align-items:center}.sync-check input{width:auto}.sync-rules{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.sync-rules .cross-signal{display:grid;gap:5px}.sync-steps{line-height:1.8;padding-left:22px}.sync-steps code{background:#f1f5f9;padding:2px 5px;border-radius:5px}.sync-state-ok{color:#166534}.sync-state-warn{color:#92400e}.sync-state-bad{color:#991b1b}
+@media(max-width:850px){.sync-grid{grid-template-columns:1fr}.sync-rules{grid-template-columns:1fr}}
+
+/* V20 圖文整合閱讀版 */
+.reading-detail{max-width:1180px;margin:0 auto}
+.reading-section{padding:18px 0;border-bottom:1px solid var(--line)}
+.reading-section:last-of-type{border-bottom:0}
+.reading-section-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:10px}
+.reading-section-head h3{margin:0}
+.source-text{white-space:pre-line;line-height:1.9;margin:0;color:#243244}
+.inline-image-block{margin-top:16px;padding-top:13px;border-top:1px dashed var(--line)}
+.inline-image-title{font-weight:800;margin-bottom:10px;color:#334155}
+.reading-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:13px}
+.reading-figure{margin:0;border:1px solid var(--line);border-radius:15px;overflow:hidden;background:#fff;box-shadow:0 4px 14px rgba(15,23,42,.04)}
+.reading-image-btn{display:block;width:100%;padding:0;border:0;background:#f8fafc;cursor:zoom-in}
+.reading-image-btn img{display:block;width:100%;height:230px;object-fit:contain;background:#f8fafc}
+.reading-figure figcaption{padding:10px 12px;font-size:13px;line-height:1.55;color:#334155}
+.reading-figure figcaption small{display:block;color:var(--muted);margin-top:5px}
+.reading-figure-meta{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px}
+.all-atlas-details{margin:18px 0;border:1px solid var(--line);border-radius:15px;background:#f8fafc;overflow:hidden}
+.all-atlas-details>summary{cursor:pointer;padding:14px 16px;font-weight:900;background:#fff}
+.all-atlas-details[open]>summary{border-bottom:1px solid var(--line)}
+.all-atlas-details .all-atlas-gallery{padding:14px}
+.compact-notice{margin:14px 14px 0}
+.detail-bottom-actions{position:sticky;bottom:0;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);padding:12px 0 4px;margin-top:16px;border-top:1px solid var(--line)}
+@media(max-width:760px){
+  .reading-gallery{grid-template-columns:1fr 1fr;gap:9px}
+  .reading-image-btn img{height:170px}
+  .reading-figure figcaption{font-size:12px;padding:8px}
+}
+@media(max-width:480px){
+  .reading-gallery{grid-template-columns:1fr}
+  .reading-image-btn img{height:auto;max-height:320px}
+  .detail-bottom-actions{position:static}
+}
+
+/* V20.1 疾病詳細頁閱讀優化 */
+.detail-quick-nav{
+  display:flex;gap:7px;align-items:center;flex-wrap:wrap;
+  position:sticky;top:0;z-index:4;
+  margin:10px 0 8px;padding:9px 8px;
+  background:rgba(255,255,255,.96);
+  border:1px solid var(--line);border-radius:13px;
+  backdrop-filter:blur(8px)
+}
+.detail-quick-label{font-size:12px;font-weight:900;color:var(--muted);margin:0 2px 0 4px}
+.detail-quick-nav button{padding:7px 10px;font-size:12px}
+.reading-section{scroll-margin-top:72px}
+.all-atlas-lazy:empty::before{
+  content:"展開後載入完整圖譜索引";
+  display:block;padding:14px;color:var(--muted);font-size:12px
+}
+@media(max-width:600px){
+  .detail-quick-nav{position:static;overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start}
+  .detail-quick-nav button{flex:0 0 auto}
+  .detail-quick-label{flex:0 0 auto}
+}
+
+/* V21 段落級精準插圖 */
+.reading-pair{margin:0 0 18px}
+.reading-paragraph{margin:0}
+.paragraph-images{margin-top:11px;padding:10px;border-radius:14px;background:#f8fafc;border:1px solid #e2e8f0}
+.paragraph-images .reading-gallery{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.unmatched-images{margin-top:20px;background:#fbfdff;border:1px dashed #cbd5e1;border-radius:14px;padding:12px}
+.paragraph-match-note{font-size:12px;line-height:1.55;margin:-4px 0 10px}
+@media(max-width:760px){
+  .paragraph-images{padding:8px}
+  .paragraph-images .reading-gallery{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){
+  .paragraph-images .reading-gallery{grid-template-columns:1fr}
+}
+
+/* V21.1 大量段落圖片摺疊 */
+.reading-more-btn{display:block;margin:10px auto 0;min-width:170px}
+.paragraph-images .reading-more-btn{background:#fff}
+
+/* V22 台灣近期官方資料 */
+.taiwan-recent-updates{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.taiwan-recent-item{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}
+.taiwan-recent-item h4{margin:8px 0 6px}
+.taiwan-recent-item p{margin:0 0 8px;line-height:1.6}
+.taiwan-recent-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.taiwan-recent-top time{font-size:12px;color:var(--muted)}
+.taiwan-interpretation,.taiwan-current-alert{margin:8px 0;padding:9px 10px;border-left:4px solid #f59e0b;background:#fffbeb;border-radius:8px;font-size:13px;line-height:1.55}
+.taiwan-alert-section{border-left:4px solid #f59e0b}
+.official-source-btn{display:inline-block;margin-top:4px}
+@media(max-width:760px){.taiwan-recent-updates{grid-template-columns:1fr}}
+
+/* V23 台灣 PRRS／新興病原情報 */
+.taiwan-evidence-legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.evidence-legend-item{display:flex;gap:9px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;line-height:1.5}
+.taiwan-prrs-hero{padding:13px 14px;border-radius:13px;background:#eef6ff;border:1px solid #cfe3ff;line-height:1.7;font-weight:700;margin-bottom:12px}
+.taiwan-intel-list,.taiwan-emerging-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.taiwan-intel-item,.taiwan-emerging-item{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}
+.taiwan-intel-head{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+.taiwan-intel-head h4{margin:1px 0 5px;flex:1;min-width:180px}
+.taiwan-intel-item p,.taiwan-emerging-item p{line-height:1.65}
+.taiwan-intel-source,.taiwan-emerging-meta{font-size:12px;color:var(--muted);margin:6px 0 8px}
+.taiwan-emerging-meta{display:flex;gap:8px;flex-wrap:wrap}
+.taiwan-emerging-meta span{padding:4px 7px;background:#f8fafc;border-radius:999px}
+.taiwan-management-points{margin-top:12px;padding:12px 14px;background:#f8fafc;border-radius:13px;border:1px solid var(--line)}
+.taiwan-management-points h4{margin:0 0 7px}
+.taiwan-management-points ul{margin:0;padding-left:20px}
+.taiwan-management-points li{margin:6px 0;line-height:1.55}
+.evidence-peer_reviewed{border-left:4px solid #2563eb}
+.evidence-official{border-left:4px solid #059669}
+.evidence-lecture{border-left:4px solid #d97706}
+.evidence-field{border-left:4px solid #7c3aed}
+@media(max-width:760px){
+  .taiwan-evidence-legend,.taiwan-intel-list,.taiwan-emerging-list{grid-template-columns:1fr}
+}
+
+
+/* V23.2 PRINT FIX — 疾病處置決策卡 */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm 11mm 13mm;
+  }
+
+  html, body {
+    width: auto !important;
+    min-width: 0 !important;
+    background: #fff !important;
+    color: #111827 !important;
+    font-size: 10.5pt !important;
+    line-height: 1.45 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* 只列印目前的疾病處置卡 */
+  .topbar,
+  .tabs,
+  .action-selector,
+  #actionEmpty,
+  #printActionPlan,
+  #resetActionChecklist,
+  #openActionDiseaseDetail,
+  .action-hero-buttons {
+    display: none !important;
+  }
+
+  .panel {
+    display: none !important;
+  }
+
+  #tab-action {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  #tab-action > .organ-header {
+    display: block !important;
+    margin: 0 0 5mm !important;
+    padding: 0 !important;
+  }
+
+  #tab-action > .organ-header h2 {
+    margin: 0 0 1.5mm !important;
+    font-size: 18pt !important;
+    line-height: 1.2 !important;
+  }
+
+  #tab-action > .organ-header .eyebrow {
+    margin-bottom: 1mm !important;
+  }
+
+  #tab-action > .organ-header .muted {
+    margin: 0 !important;
+    font-size: 9pt !important;
+    line-height: 1.4 !important;
+  }
+
+  #actionPlan,
+  #actionPlan.hidden {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* 疾病抬頭縮成列印友善版本，避免第一頁被吃掉太多空間 */
+  #tab-action .action-hero {
+    display: block !important;
+    background: #f8fafc !important;
+    color: #111827 !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 3mm !important;
+    padding: 4mm 5mm !important;
+    margin: 0 0 3mm !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  #tab-action .action-hero h2 {
+    margin: 1mm 0 1.5mm !important;
+    font-size: 16pt !important;
+    line-height: 1.2 !important;
+  }
+
+  #tab-action .chips {
+    gap: 1.2mm !important;
+  }
+
+  #tab-action .badge {
+    border: 1px solid #cbd5e1 !important;
+    background: #fff !important;
+    color: #334155 !important;
+    padding: 0.8mm 1.8mm !important;
+    font-size: 8pt !important;
+  }
+
+  #tab-action .action-alert {
+    margin: 0 0 4mm !important;
+    padding: 3mm 4mm !important;
+    border: 1px solid #f59e0b !important;
+    border-radius: 2.5mm !important;
+    background: #fff7ed !important;
+    color: #7c2d12 !important;
+    font-size: 9pt !important;
+    line-height: 1.45 !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /*
+   * 關鍵修正：
+   * 網頁版是雙欄 + action-card break-inside:avoid，
+   * 瀏覽器會把整張卡推到下一頁，造成第一頁大片空白。
+   * 列印改成單欄，長卡允許自然跨頁，只保護標題與單一清單項目。
+   */
+  #tab-action .action-grid {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  #tab-action .action-card,
+  #tab-action .action-card-wide {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    grid-column: auto !important;
+    margin: 0 0 4mm !important;
+    padding: 3.5mm 4mm !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 2.5mm !important;
+    background: #fff !important;
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+    overflow: visible !important;
+  }
+
+  #tab-action .urgent-card {
+    border-color: #fca5a5 !important;
+    background: #fffafa !important;
+  }
+
+  #tab-action .action-card-head {
+    display: flex !important;
+    align-items: center !important;
+    gap: 2mm !important;
+    margin: 0 0 2.5mm !important;
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  #tab-action .action-card-head > span:first-child {
+    width: 7mm !important;
+    height: 7mm !important;
+    min-width: 7mm !important;
+    border: 1px solid #cbd5e1 !important;
+    background: #f1f5f9 !important;
+    font-size: 9pt !important;
+  }
+
+  #tab-action .action-card-head h3 {
+    font-size: 12.5pt !important;
+    line-height: 1.25 !important;
+  }
+
+  #tab-action .checklist {
+    display: block !important;
+  }
+
+  #tab-action .check-row {
+    display: flex !important;
+    gap: 2mm !important;
+    margin: 0 0 1.6mm !important;
+    padding: 2.2mm 2.5mm !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 1.8mm !important;
+    background: #fff !important;
+    line-height: 1.4 !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  #tab-action .check-row input[type="checkbox"] {
+    width: 3.5mm !important;
+    height: 3.5mm !important;
+    min-width: 3.5mm !important;
+    margin: 0.4mm 0 0 !important;
+  }
+
+  #tab-action .source-box {
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
+    white-space: pre-wrap !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: #1f2937 !important;
+    font-size: 9.5pt !important;
+    line-height: 1.52 !important;
+  }
+
+  #tab-action .metric-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 2mm !important;
+  }
+
+  #tab-action .metric {
+    padding: 2.5mm !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 1.8mm !important;
+    background: #fff !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  #tab-action .metric input {
+    display: none !important;
+  }
+
+  #tab-action .metric b {
+    margin-bottom: 1mm !important;
+  }
+
+  /* 避免頁底只留下標題，並減少瀏覽器預設 margins 對版面的干擾 */
+  #tab-action h2,
+  #tab-action h3,
+  #tab-action h4 {
+    orphans: 3;
+    widows: 3;
+  }
+
+  #tab-action p,
+  #tab-action li,
+  #tab-action .source-box {
+    orphans: 3;
+    widows: 3;
+  }
+
+  a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+}
+
+/* V23.3 PoSaV 完整疾病介紹 */
+#emergingPathogenDialog{max-width:980px;width:min(94vw,980px)}
+#emergingPathogenDialog .taiwan-dialog-body{max-height:78vh;overflow:auto}
+.emerging-highlight{background:#fff7ed;border-left:4px solid #d97706}
+#emergingPathogenDialog .taiwan-section ul{margin:8px 0 0;padding-left:20px}
+#emergingPathogenDialog .taiwan-section li{margin:6px 0;line-height:1.6}

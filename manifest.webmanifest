@@ -1,0 +1,26 @@
+{
+  "name": "豬病圖譜搜尋與症狀判斷系統",
+  "short_name": "豬病搜尋",
+  "description": "豬病圖譜搜尋、症狀判斷、病例追蹤、台灣現行防疫資訊與處置決策系統。",
+  "lang": "zh-Hant-TW",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f7fb",
+  "theme_color": "#0b8f91",
+  "icons": [
+    {
+      "src": "icons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
